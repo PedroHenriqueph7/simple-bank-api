@@ -1,0 +1,35 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+### IDEs e Ferramentas ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+.idea/
+*.iws
+*.iml
+*.ipr
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+.vscode/
+
+### Arquivos de Log ###
+*.log
+logs/
+
+### Arquivos de Sistema Operacional ###
+.DS_Store
+Thumbs.db
+
+### Arquivos de Segredos e Configuração Local ###
+application-local.properties
+.env
