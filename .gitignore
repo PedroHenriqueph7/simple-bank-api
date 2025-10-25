@@ -1,6 +1,10 @@
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
+.gitattributes
+.mvn/wrapper/maven-wrapper.properties
+mvnw
+mvnw.cmd
 
 ### IDEs e Ferramentas ###
 .apt_generated

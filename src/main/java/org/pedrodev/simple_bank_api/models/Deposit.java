@@ -1,0 +1,35 @@
+package org.pedrodev.simple_bank_api.models;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.pedrodev.simple_bank_api.models.enums.Status;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "tb_deposit")
+public class Deposit {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
+    @Column(nullable = false)
+    private User user;
+    @Column(nullable = false)
+    private BigDecimal valor;
+    @Column(nullable = false)
+    private Status statusAtual;
+
+    @Column(nullable = false, unique = true)
+    private String pixId;
+    @Column(nullable = false)
+    private LocalDateTime dataExpiracao;
+}
