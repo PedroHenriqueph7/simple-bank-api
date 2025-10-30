@@ -1,6 +1,7 @@
 package org.pedrodev.simple_bank_api.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,21 +17,25 @@ import org.pedrodev.simple_bank_api.models.enums.UserRole;
 @Entity
 @Table(name = "tb_user")
 public class User {
-
+    // Nome lógico para o JPA
+    // Nome da sequência no Banco de Dados// A escolha mais segura e compatível// Diz para usar sequência// Aponta para o gerador definido acima
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "user_seq", sequenceName = "user_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
     private Long id;
+
     @Column(nullable = false)
     private String nomeCompleto;
 
-    @Column(nullable = false, unique = true)
     @CPF
-    private String cpf;
     @Column(nullable = false, unique = true)
+    private String cpf;
 
+    @Email
+    @Column(nullable = false, unique = true)
     private String email;
-    @Column(nullable = false)
 
+    @Column(nullable = false)
     private String senha;
 
     @Column(nullable = false)

@@ -17,13 +17,14 @@ import java.math.BigDecimal;
 public class Wallet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "wallet_seq", sequenceName = "wallet_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wallet_seq")
     private Long id;
 
     private BigDecimal saldo;
 
-    @Column(nullable = false)
     @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
 

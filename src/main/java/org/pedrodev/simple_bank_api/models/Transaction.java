@@ -19,15 +19,22 @@ import java.time.LocalDateTime;
 public class Transaction {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "transaction_seq", sequenceName = "transaction_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaction_seq")
     private Long id;
 
     @Column(nullable = false)
     private BigDecimal valor;
-    @Column(nullable = false)
+
+
+    @ManyToOne
+    @JoinColumn(name = "pagador_id", nullable = false)
     private User pagador;
-    @Column(nullable = false)
+
+    @ManyToOne
+    @JoinColumn(name = "recebedor_id", nullable = false)
     private User recebedor;
+
     @Column(nullable = false)
     private LocalDateTime dataeHora;
 }

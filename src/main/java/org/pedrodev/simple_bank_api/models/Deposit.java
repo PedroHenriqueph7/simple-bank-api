@@ -19,17 +19,24 @@ import java.time.LocalDateTime;
 public class Deposit {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "deposit_seq", sequenceName = "deposit_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "deposit_seq")
     private Long id;
-    @Column(nullable = false)
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
     @Column(nullable = false)
     private BigDecimal valor;
+
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status statusAtual;
 
     @Column(nullable = false, unique = true)
     private String pixId;
+
     @Column(nullable = false)
     private LocalDateTime dataExpiracao;
 }
