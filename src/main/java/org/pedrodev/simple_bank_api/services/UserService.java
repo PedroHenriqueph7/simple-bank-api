@@ -3,6 +3,7 @@ package org.pedrodev.simple_bank_api.services;
 
 import org.pedrodev.simple_bank_api.dtos.UserRegisterDTO;
 import org.pedrodev.simple_bank_api.dtos.UserRequestUpdateEmailDTO;
+import org.pedrodev.simple_bank_api.dtos.UserRequestUpdatePasswordDTO;
 import org.pedrodev.simple_bank_api.dtos.UserResponseDTO;
 import org.pedrodev.simple_bank_api.models.User;
 import org.pedrodev.simple_bank_api.repositories.UserRepository;
@@ -35,12 +36,12 @@ public class UserService {
     }
 
     @Transactional
-    public void updateEmailUser(Long idUser, UserRequestUpdateEmailDTO userRequestUpdateDTO) {
+    public void updateEmailUser(Long idUser, UserRequestUpdateEmailDTO userEmailUpdateDTO) {
 
         User user = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("User not Found"));
 
-        if(user.getSenha().equals(userRequestUpdateDTO.password())){
-            user.setEmail(userRequestUpdateDTO.email());
+        if(user.getSenha().equals(userEmailUpdateDTO.password())){
+            user.setEmail(userEmailUpdateDTO.email());
         } else {
             throw new RuntimeException("Informe a senha atual! esta senha esta incorreta!!");
         }
@@ -48,6 +49,27 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
+    public void updatePasswordUser(Long idUser, UserRequestUpdatePasswordDTO passwordDTO) {
+
+        User user = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("User not Found"));
+
+        if(!user.getSenha().equals(passwordDTO.currentPassword())){
+            throw new RuntimeException("Informe a senha atual correta!! antes de inserir uma nova senha");
+        }
+
+        if (!passwordDTO.newPassword().equals(passwordDTO.confirmNewPassword())){
+            throw new RuntimeException("As senhas não são iguais!!");
+        }
+
+        if(user.getSenha().equals(passwordDTO.newPassword())){
+            throw new RuntimeException("A nova senha não pode ser igual a senha atual!");
+        }
+
+        user.setSenha(passwordDTO.newPassword());
+
+        userRepository.save(user);
+    }
 
     public void deletarUserById(Long idUser) {
 

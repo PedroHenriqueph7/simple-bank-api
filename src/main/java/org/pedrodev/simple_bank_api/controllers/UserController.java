@@ -3,6 +3,7 @@ package org.pedrodev.simple_bank_api.controllers;
 import jakarta.validation.Valid;
 import org.pedrodev.simple_bank_api.dtos.UserRegisterDTO;
 import org.pedrodev.simple_bank_api.dtos.UserRequestUpdateEmailDTO;
+import org.pedrodev.simple_bank_api.dtos.UserRequestUpdatePasswordDTO;
 import org.pedrodev.simple_bank_api.dtos.UserResponseDTO;
 import org.pedrodev.simple_bank_api.services.UserService;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +26,21 @@ public class UserController {
         return  ResponseEntity.ok("User register with success");
     }
 
-    @PatchMapping(value = "/{idUser}")
-    public ResponseEntity<String> updateEmailUser(@Valid @PathVariable Long idUser, @RequestBody UserRequestUpdateEmailDTO userUpdate) {
+    @PatchMapping(value = "/email/{idUser}")
+    public ResponseEntity<String> updateEmailUser(@Valid @PathVariable Long idUser, @RequestBody UserRequestUpdateEmailDTO emailUpdateDTO) {
 
-        userService.updateEmailUser(idUser, userUpdate);
-        return ResponseEntity.ok("User update email with success");
+        userService.updateEmailUser(idUser, emailUpdateDTO);
+        return ResponseEntity.ok("User email update successful.");
     }
+
+    @PatchMapping(value = "/password/{idUser}")
+    public ResponseEntity<String> updatePasswordUser(@Valid @PathVariable Long idUser, @RequestBody UserRequestUpdatePasswordDTO passwordUpdateDTO) {
+
+        userService.updatePasswordUser(idUser, passwordUpdateDTO);
+        return ResponseEntity.ok("User password update successful.");
+    }
+
+
 
     @GetMapping(value = "/{idUser}")
     public UserResponseDTO findUserByID(@PathVariable Long idUser) {
