@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="pedro.henrique">
+        <comment>Cria a sequência user_id_seq para a tabela tb_user</comment>
+
+        <createSequence sequenceName="user_id_seq"
+                        incrementBy="1"
+                        startValue="1" /> <createTable tableName="tb_user">
+
+        <column name="id" type="BIGINT"
+                defaultValueSequenceNext="user_id_seq"> <constraints primaryKey="true" nullable="false"/>
+        </column>
+
+        <column name="nome_completo" type="VARCHAR(255)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="cpf" type="VARCHAR(14)">
+            <constraints nullable="false" unique="true"/>
+        </column>
+        <column name="email" type="VARCHAR(255)">
+            <constraints nullable="false" unique="true"/>
+        </column>
+        <column name="senha" type="VARCHAR(255)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="role" type="VARCHAR(20)">
+            <constraints nullable="false"/>
+        </column>
+    </createTable>
+
+    </changeSet>
+</databaseChangeLog>

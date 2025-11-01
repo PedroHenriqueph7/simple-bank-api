@@ -1,5 +1,8 @@
 package org.pedrodev.simple_bank_api.models.enums;
 
+import lombok.Getter;
+
+
 public enum UserRole {
     COMUM("ROLE_COMUM"),
     LOJISTA("ROLE_LOJISTA");

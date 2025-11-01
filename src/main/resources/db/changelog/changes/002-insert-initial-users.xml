@@ -6,18 +6,41 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="2" author="pedro.henrique">
-        <comment>Inserindo usuários iniciais Lojistas e Comuns</comment> <insert tableName="tb_user">
+        <comment>Inserindo usuários iniciais Lojistas e Comuns</comment>
+        <insert tableName="tb_user">
         <column name="nome_completo" value="Ana da Silva Loja"/>
-        <column name="cpf" value="11122233344"/>
+        <column name="cpf" value="213.882.720-83"/>
         <column name="email" value="ana.lojista@email.com"/>
-        <column name="senha" value="senha_hash_exemplo_1"/> <column name="role" value="LOJISTA"/> </insert>
+        <column name="senha" value="senha_hash_exemplo_1"/>
+        <column name="role" value="LOJISTA"/> </insert>
 
         <insert tableName="tb_user">
             <column name="nome_completo" value="Felipe Costa Comum"/>
-            <column name="cpf" value="66677788899"/>
+            <column name="cpf" value="775.709.730-46"/>
             <column name="email" value="felipe.comum@email.com"/>
             <column name="senha" value="senha_hash_exemplo_2"/>
             <column name="role" value="COMUM"/>
+        </insert>
+        <insert tableName="tb_user">
+            <column name="nome_completo" value="Pedro Souza"/>
+            <column name="cpf" value="829.327.970-26"/>
+            <column name="email" value="pedro.htestecomum@gmail.com"/>
+            <column name="senha" value="senha_hash_exemplo_3"/>
+            <column name="role" value="COMUM"/>
+        </insert>
+        <insert tableName="tb_user">
+            <column name="nome_completo" value="Henrique Silva"/>
+            <column name="cpf" value="168.618.500-63"/>
+            <column name="email" value="henrique.htestecomum@gmail.com"/>
+            <column name="senha" value="senha_hash_exemplo_4"/>
+            <column name="role" value="COMUM"/>
+        </insert>
+        <insert tableName="tb_user">
+            <column name="nome_completo" value="Ellen Silva"/>
+            <column name="cpf" value="262.696.230-90"/>
+            <column name="email" value="ellen.htestecomum@gmail.com"/>
+            <column name="senha" value="senha_hash_exemplo_5"/>
+            <column name="role" value="LOJISTA"/>
         </insert>
 
     </changeSet>

@@ -27,11 +27,9 @@ public class User {
     @Column(nullable = false)
     private String nomeCompleto;
 
-    @CPF
     @Column(nullable = false, unique = true)
     private String cpf;
 
-    @Email
     @Column(nullable = false, unique = true)
     private String email;
 
