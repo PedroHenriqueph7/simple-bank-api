@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.br.CPF;
 import org.pedrodev.simple_bank_api.models.enums.UserRole;
 
@@ -15,8 +16,11 @@ import org.pedrodev.simple_bank_api.models.enums.UserRole;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Where(clause = "ativo = true")
 @Table(name = "tb_user")
 public class User {
+
+    private boolean ativo = true;
     // Nome lógico para o JPA
     // Nome da sequência no Banco de Dados// A escolha mais segura e compatível// Diz para usar sequência// Aponta para o gerador definido acima
     @Id

@@ -45,11 +45,11 @@ public class UserController {
     }
 
     /*@PostMapping(value = "/me/confirm-deletion")
-    public ResponseEntity deleteUserById(@Valid @RequestBody UserDeletionDTO passwordDTO *//*,Autentication autentication*//*) {
+    public ResponseEntity deleteUserWithPasswordConfirmation(@Valid @RequestBody UserDeletionDTO passwordDTO *//*,Autentication autentication*//*) {
 
         //Long idUser = autentication.getId();
 
-        userService.deletarUserById(passwordDTO *//*,idUser*//*);
+        userService.deleteUserWithPasswordConfirmation(*//*idUser,*//*passwordDTO);
         return ResponseEntity.noContent().build();
     }*/
 

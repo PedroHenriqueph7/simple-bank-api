@@ -69,7 +69,9 @@ public class UserService {
     }
 
     // Retorna a lógica do metodo de deletar user quando implementar o spring security
-    /*public void deletarUserById(UserDeletionDTO passwordDTO *//*,Long idUser*//*) {
+    // Deletar em cascata a wallet, transaction, deposit
+    /*public void deleteUserWithPasswordConfirmation(UserDeletionDTO passwordDTO *//*,Long idUser*//*) {
+
 
         // User user = userRepository.findById(idUser).orElseThrow(()-> new RuntimeException("User not found"));
 
@@ -77,7 +79,25 @@ public class UserService {
             throw new RuntimeException("Senha Invalida!");
         }*//*
 
-        // userRepository.deleteById(user.getId());
+        user.setAtivo(false)
 
+        // B. (Opcional, mas recomendado para LGPD/GDPR) Anonimiza os dados pessoais
+        user.setNomeCompleto("Usuário Desativado");
+        user.setCpf("000000000" + user.getId()); // Um valor único, mas inválido e anonimizado
+        user.setEmail(user.getId() + "@deleted.com");
+        user.setSenha("DELETED_PASSWORD_HASH"); // Previne logins futuros
+
+        // C. (Opcional) Zera a carteira para tirá-la de qualquer contagem de saldo total
+        Wallet wallet = walletRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Carteira não encontrada"));
+        wallet.setSaldo(BigDecimal.ZERO);
+        walletRepository.save(wallet);
+
+        // D. Salva o usuário "desativado" e anonimizado
+        userRepository.save(user);
+
+        // E. As Transações e Depósitos? NÃO MEXA NELES.
+        // Eles permanecem no banco, apontando para o ID do usuário anonimizado,
+        // preservando 100% do histórico financeiro.
     }*/
 }
