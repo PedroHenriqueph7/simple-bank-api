@@ -1,10 +1,7 @@
 package org.pedrodev.simple_bank_api.controllers;
 
 import jakarta.validation.Valid;
-import org.pedrodev.simple_bank_api.dtos.UserRegisterDTO;
-import org.pedrodev.simple_bank_api.dtos.UserRequestUpdateEmailDTO;
-import org.pedrodev.simple_bank_api.dtos.UserRequestUpdatePasswordDTO;
-import org.pedrodev.simple_bank_api.dtos.UserResponseDTO;
+import org.pedrodev.simple_bank_api.dtos.*;
 import org.pedrodev.simple_bank_api.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,8 +37,6 @@ public class UserController {
         return ResponseEntity.ok("User password update successful.");
     }
 
-
-
     @GetMapping(value = "/{idUser}")
     public UserResponseDTO findUserByID(@PathVariable Long idUser) {
 
@@ -49,12 +44,14 @@ public class UserController {
         return userResponseDTO;
     }
 
-    @DeleteMapping(value = "/{idUser}")
-    public ResponseEntity deleteUserById(@PathVariable Long idUser) {
+    /*@PostMapping(value = "/me/confirm-deletion")
+    public ResponseEntity deleteUserById(@Valid @RequestBody UserDeletionDTO passwordDTO *//*,Autentication autentication*//*) {
 
-        userService.deletarUserById(idUser);
+        //Long idUser = autentication.getId();
+
+        userService.deletarUserById(passwordDTO *//*,idUser*//*);
         return ResponseEntity.noContent().build();
-    }
+    }*/
 
 
 }

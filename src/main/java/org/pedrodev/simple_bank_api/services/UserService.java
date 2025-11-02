@@ -1,10 +1,7 @@
 package org.pedrodev.simple_bank_api.services;
 
 
-import org.pedrodev.simple_bank_api.dtos.UserRegisterDTO;
-import org.pedrodev.simple_bank_api.dtos.UserRequestUpdateEmailDTO;
-import org.pedrodev.simple_bank_api.dtos.UserRequestUpdatePasswordDTO;
-import org.pedrodev.simple_bank_api.dtos.UserResponseDTO;
+import org.pedrodev.simple_bank_api.dtos.*;
 import org.pedrodev.simple_bank_api.models.User;
 import org.pedrodev.simple_bank_api.repositories.UserRepository;
 import org.springframework.stereotype.Service;
@@ -71,11 +68,16 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void deletarUserById(Long idUser) {
+    // Retorna a lógica do metodo de deletar user quando implementar o spring security
+    /*public void deletarUserById(UserDeletionDTO passwordDTO *//*,Long idUser*//*) {
 
-        User user = userRepository.findById(idUser).orElseThrow(()-> new RuntimeException("User not found"));
+        // User user = userRepository.findById(idUser).orElseThrow(()-> new RuntimeException("User not found"));
 
-        userRepository.deleteById(user.getId());
+        *//*if (!user.getPassword().equals(passwordDTO.password())) {
+            throw new RuntimeException("Senha Invalida!");
+        }*//*
 
-    }
+        // userRepository.deleteById(user.getId());
+
+    }*/
 }
