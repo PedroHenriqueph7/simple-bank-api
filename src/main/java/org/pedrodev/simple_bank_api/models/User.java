@@ -1,14 +1,10 @@
 package org.pedrodev.simple_bank_api.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.Where;
-import org.hibernate.validator.constraints.br.CPF;
 import org.pedrodev.simple_bank_api.models.enums.UserRole;
 
 @Getter
@@ -16,7 +12,6 @@ import org.pedrodev.simple_bank_api.models.enums.UserRole;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Where(clause = "ativo = true")
 @Table(name = "tb_user")
 public class User {
 

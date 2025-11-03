@@ -3,6 +3,7 @@ package org.pedrodev.simple_bank_api.controllers;
 import jakarta.validation.Valid;
 import org.pedrodev.simple_bank_api.dtos.*;
 import org.pedrodev.simple_bank_api.services.UserService;
+import org.pedrodev.simple_bank_api.services.WalletService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,8 +13,11 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    private  final WalletService walletService;
+
+    public UserController(UserService userService, WalletService walletService) {
         this.userService = userService;
+        this.walletService = walletService;
     }
 
     @PostMapping(value = "/register")

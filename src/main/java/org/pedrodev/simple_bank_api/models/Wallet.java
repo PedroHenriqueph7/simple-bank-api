@@ -28,4 +28,10 @@ public class Wallet {
     private User user;
 
 
+    public Wallet(BigDecimal saldo, User user){
+        this.saldo = saldo;
+        this.user = user;
+    }
+
+
 }
