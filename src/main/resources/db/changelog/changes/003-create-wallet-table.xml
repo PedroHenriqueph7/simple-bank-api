@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="3" author="pedro.henrique">
+        <comment>Cria a sequência wallet_id_seq para a tabela tb_wallet</comment>
+
+        <createSequence sequenceName="wallet_id_seq"
+                        incrementBy="1"
+                        startValue="1" /> <createTable tableName="tb_wallet">
+
+        <column name="id" type="BIGINT"
+                defaultValueSequenceNext="wallet_id_seq"> <constraints primaryKey="true" nullable="false"/>
+        </column>
+
+        <column name="saldo" type="NUMERIC(10,2)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="user_id" type="INT">
+            <constraints nullable="false"/>
+        </column>
+    </createTable>
+
+    </changeSet>
+</databaseChangeLog>

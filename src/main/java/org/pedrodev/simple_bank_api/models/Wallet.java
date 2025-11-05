@@ -21,6 +21,7 @@ public class Wallet {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wallet_seq")
     private Long id;
 
+    @Column(precision = 10, scale = 2)
     private BigDecimal saldo;
 
     @OneToOne

@@ -15,7 +15,9 @@
         <column name="id" type="BIGINT"
                 defaultValueSequenceNext="user_id_seq"> <constraints primaryKey="true" nullable="false"/>
         </column>
-
+        <column name="ativo" type="BOOLEAN">
+            <constraints nullable="false"/>
+        </column>
         <column name="nome_completo" type="VARCHAR(255)">
             <constraints nullable="false"/>
         </column>

@@ -13,7 +13,7 @@ import org.pedrodev.simple_bank_api.models.enums.UserRole;
 @NoArgsConstructor
 @Entity
 @Table(name = "tb_user")
-public class User {
+public class User{
 
     private boolean ativo = true;
     // Nome lógico para o JPA

@@ -1,5 +1,6 @@
 package org.pedrodev.simple_bank_api.services;
 
+import org.pedrodev.simple_bank_api.dtos.WalletResponseDTO;
 import org.pedrodev.simple_bank_api.models.User;
 import org.pedrodev.simple_bank_api.models.Wallet;
 import org.pedrodev.simple_bank_api.repositories.WalletRepository;
@@ -20,10 +21,17 @@ public class WalletService {
     @Transactional
     public void automaticallyAddWalletToUserRegistration(User objetoUser) {
 
-        BigDecimal saldo = BigDecimal.valueOf(0.00);
+        BigDecimal saldo = BigDecimal.ZERO;
 
-        Wallet wallet = new Wallet(saldo,objetoUser);
-        walletRepository.save(wallet);
+        Wallet newWallet = new Wallet(saldo,objetoUser);
+        walletRepository.save(newWallet);
+    }
+
+    @Transactional
+    public WalletResponseDTO walletGetSaldoFindByUserId(Long userId) {
+
+        Wallet wallet = walletRepository.findByUser_id(userId);
+        return new WalletResponseDTO(wallet.getSaldo());
     }
 
 }
