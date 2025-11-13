@@ -13,19 +13,10 @@ public class UserController {
 
     private final UserService userService;
 
-    private  final WalletService walletService;
-
-    public UserController(UserService userService, WalletService walletService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.walletService = walletService;
     }
 
-    @PostMapping(value = "/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody UserRegisterDTO userDTO) {
-
-        userService.registerUser(userDTO);
-        return  ResponseEntity.ok("User register with success");
-    }
 
     @PatchMapping(value = "/email/{idUser}")
     public ResponseEntity<String> updateEmailUser(@Valid @PathVariable Long idUser, @RequestBody UserRequestUpdateEmailDTO emailUpdateDTO) {
@@ -41,13 +32,6 @@ public class UserController {
         return ResponseEntity.ok("User password update successful.");
     }
 
-    @GetMapping(value = "/{idUser}")
-    public UserResponseDTO findUserByID(@PathVariable Long idUser) {
-
-        UserResponseDTO userResponseDTO = userService.findUserById(idUser);
-        return userResponseDTO;
-    }
-
     /*@PostMapping(value = "/me/confirm-deletion")
     public ResponseEntity deleteUserWithPasswordConfirmation(@Valid @RequestBody UserDeletionDTO passwordDTO *//*,Autentication autentication*//*) {
 
@@ -56,6 +40,5 @@ public class UserController {
         userService.deleteUserWithPasswordConfirmation(*//*idUser,*//*passwordDTO);
         return ResponseEntity.noContent().build();
     }*/
-
 
 }

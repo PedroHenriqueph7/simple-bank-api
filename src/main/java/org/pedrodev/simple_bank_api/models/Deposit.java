@@ -1,10 +1,7 @@
 package org.pedrodev.simple_bank_api.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.pedrodev.simple_bank_api.models.enums.Status;
 
 import java.math.BigDecimal;
@@ -14,10 +11,12 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "tb_deposit")
 public class Deposit {
 
+    @EqualsAndHashCode.Include
     @Id
     @SequenceGenerator(name = "deposit_seq", sequenceName = "deposit_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "deposit_seq")

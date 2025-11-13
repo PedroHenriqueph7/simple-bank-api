@@ -1,6 +1,7 @@
 package org.pedrodev.simple_bank_api.services;
 
 
+import jakarta.validation.Valid;
 import org.pedrodev.simple_bank_api.dtos.*;
 import org.pedrodev.simple_bank_api.models.User;
 import org.pedrodev.simple_bank_api.repositories.UserRepository;
@@ -12,20 +13,10 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final WalletService walletService;
-
-    public UserService(UserRepository userRepository, WalletService walletService) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.walletService = walletService;
     }
 
-    @Transactional
-    public void registerUser(UserRegisterDTO userRegisterDTO) {
-
-            User user = new User(userRegisterDTO.nomeCompleto(), userRegisterDTO.cpf(), userRegisterDTO.email(), userRegisterDTO.password(), userRegisterDTO.role());
-            userRepository.save(user);
-            walletService.automaticallyAddWalletToUserRegistration(user);
-    }
 
     // info do usuario
     @Transactional(readOnly = true)

@@ -1,19 +1,23 @@
 package org.pedrodev.simple_bank_api.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.pedrodev.simple_bank_api.models.enums.UserRole;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "tb_user")
-public class User{
+public class User implements UserDetails {
 
     private boolean ativo = true;
     // Nome lógico para o JPA
@@ -26,6 +30,7 @@ public class User{
     @Column(nullable = false)
     private String nomeCompleto;
 
+    @EqualsAndHashCode.Include
     @Column(nullable = false, unique = true)
     private String cpf;
 
@@ -45,5 +50,41 @@ public class User{
         this.email = email;
         this.senha = senha;
         this.role = role;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+       if(this.role == UserRole.COMUM) return List.of(new SimpleGrantedAuthority("ROLE_COMUM"), new SimpleGrantedAuthority("ROLE_LOJISTA"));
+       else return List.of(new SimpleGrantedAuthority("ROLE_LOJISTA"));
+    }
+
+    @Override
+    public String getPassword() {
+        return senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return cpf;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
     }
 }
