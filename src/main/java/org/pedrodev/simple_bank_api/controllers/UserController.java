@@ -5,10 +5,11 @@ import org.pedrodev.simple_bank_api.dtos.*;
 import org.pedrodev.simple_bank_api.services.UserService;
 import org.pedrodev.simple_bank_api.services.WalletService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/users")
 public class UserController {
 
     private final UserService userService;
@@ -18,27 +19,32 @@ public class UserController {
     }
 
 
-    @PatchMapping(value = "/email/{idUser}")
-    public ResponseEntity<String> updateEmailUser(@Valid @PathVariable Long idUser, @RequestBody UserRequestUpdateEmailDTO emailUpdateDTO) {
+    @GetMapping(value = "/user")
+    public UserResponseDTO findUser(Authentication authentication){
+        UserResponseDTO userInfo = userService.findUser(authentication);
 
-        userService.updateEmailUser(idUser, emailUpdateDTO);
+        return userInfo;
+    }
+
+    @PatchMapping(value = "/me/email")
+    public ResponseEntity<String> updateEmailUser(@Valid Authentication authentication, @RequestBody UserRequestUpdateEmailDTO emailUpdateDTO) {
+
+        userService.updateEmailUser(authentication, emailUpdateDTO);
         return ResponseEntity.ok("User email update successful.");
     }
 
-    @PatchMapping(value = "/password/{idUser}")
-    public ResponseEntity<String> updatePasswordUser(@Valid @PathVariable Long idUser, @RequestBody UserRequestUpdatePasswordDTO passwordUpdateDTO) {
+    @PatchMapping(value = "/me/password")
+    public ResponseEntity<String> updatePasswordUser(@Valid Authentication authentication, @RequestBody UserRequestUpdatePasswordDTO passwordUpdateDTO) {
 
-        userService.updatePasswordUser(idUser, passwordUpdateDTO);
+        userService.updatePasswordUser(authentication, passwordUpdateDTO);
         return ResponseEntity.ok("User password update successful.");
     }
 
-    /*@PostMapping(value = "/me/confirm-deletion")
-    public ResponseEntity deleteUserWithPasswordConfirmation(@Valid @RequestBody UserDeletionDTO passwordDTO *//*,Autentication autentication*//*) {
+    @PostMapping(value = "/me/confirm-deletion")
+    public ResponseEntity deleteUserWithPasswordConfirmation(@Valid @RequestBody UserDeletionDTO passwordDTO,Authentication authentication) {
 
-        //Long idUser = autentication.getId();
-
-        userService.deleteUserWithPasswordConfirmation(*//*idUser,*//*passwordDTO);
-        return ResponseEntity.noContent().build();
-    }*/
+        userService.deleteUserWithPasswordConfirmation(passwordDTO,authentication);
+       return ResponseEntity.noContent().build();
+    }
 
 }
