@@ -6,11 +6,14 @@ import org.pedrodev.simple_bank_api.dtos.*;
 import org.pedrodev.simple_bank_api.models.User;
 import org.pedrodev.simple_bank_api.models.Wallet;
 import org.pedrodev.simple_bank_api.repositories.UserRepository;
+import org.pedrodev.simple_bank_api.repositories.WalletRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 
 @Service
 public class UserService {
@@ -18,10 +21,15 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
+    private final WalletRepository walletRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private final WalletService walletService;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, WalletRepository walletRepository, WalletService walletService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.walletRepository = walletRepository;
+        this.walletService = walletService;
     }
 
 
@@ -93,31 +101,28 @@ public class UserService {
     }
 
 
-    public void deleteUserWithPasswordConfirmation(UserDeletionDTO passwordDTO,Authentication authentication) {
+    public void deleteUserWithPasswordConfirmation(Authentication authentication, UserDeletionDTO passwordDTO) {
 
+        User userResponsible = (User) authentication.getPrincipal();
+        User user = userRepository.findById(userResponsible.getId()).orElseThrow(()-> new RuntimeException("User not found"));
 
-        // User user = userRepository.findById(idUser).orElseThrow(()-> new RuntimeException("User not found"));
+        if (!passwordEncoder.matches(passwordDTO.password(), user.getPassword())) {
+            throw new RuntimeException("Senha Invalida!");
+        }
 
-        //*//*if (!user.getPassword().equals(passwordDTO.password())) {
-            //throw new RuntimeException("Senha Invalida!");
-        //}*//*
+        user.setAtivo(false);
 
-        //user.setAtivo(false)
+        // Anonimizando os dados pessoais
+        user.setNomeCompleto("Usuário Desativado");
+        user.setCpf("000000000" + user.getId()); // Um valor único, mas inválido e anonimizado
+        user.setEmail(user.getId() + "@deleted.com");
+        user.setSenha("DELETED_PASSWORD_HASH"); // Previne logins futuros
 
-        // B. (Opcional, mas recomendado para LGPD/GDPR) Anonimiza os dados pessoais
-        //user.setNomeCompleto("Usuário Desativado");
-        //user.setCpf("000000000" + user.getId()); // Um valor único, mas inválido e anonimizado
-        //user.setEmail(user.getId() + "@deleted.com");
-        //user.setSenha("DELETED_PASSWORD_HASH"); // Previne logins futuros
-
-        // C. (Opcional) Zera a carteira para tirá-la de qualquer contagem de saldo total
-        //Wallet wallet = walletRepository.findByUser(user)
-                //.orElseThrow(() -> new RuntimeException("Carteira não encontrada"));
-        //wallet.setSaldo(BigDecimal.ZERO);
-        //walletRepository.save(wallet);
+        // Zera a carteira para tirá-la de qualquer contagem de saldo total
+        walletService.updateWalletForDeactivatedUser(user);
 
         // D. Salva o usuário "desativado" e anonimizado
-        //userRepository.save(user);
+        userRepository.save(user);
 
         // E. As Transações e Depósitos? NÃO MEXA NELES.
         // Eles permanecem no banco, apontando para o ID do usuário anonimizado,

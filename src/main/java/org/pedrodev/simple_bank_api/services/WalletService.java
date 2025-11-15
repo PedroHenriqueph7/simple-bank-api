@@ -34,4 +34,15 @@ public class WalletService {
         return new WalletResponseDTO(wallet.getSaldo());
     }
 
+    @Transactional
+    public void updateWalletForDeactivatedUser(User user){
+
+        Wallet wallet = walletRepository.findByUser_id(user.getId());
+
+        if (wallet == null) throw  new RuntimeException("Carteira não encontrada");
+
+        wallet.setSaldo(BigDecimal.ZERO);
+        walletRepository.save(wallet);
+    }
+
 }

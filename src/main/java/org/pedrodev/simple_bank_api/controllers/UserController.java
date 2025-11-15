@@ -43,8 +43,8 @@ public class UserController {
     @PostMapping(value = "/me/confirm-deletion")
     public ResponseEntity deleteUserWithPasswordConfirmation(@Valid @RequestBody UserDeletionDTO passwordDTO,Authentication authentication) {
 
-        userService.deleteUserWithPasswordConfirmation(passwordDTO,authentication);
-       return ResponseEntity.noContent().build();
+        userService.deleteUserWithPasswordConfirmation(authentication, passwordDTO);
+        return ResponseEntity.noContent().build();
     }
 
 }
