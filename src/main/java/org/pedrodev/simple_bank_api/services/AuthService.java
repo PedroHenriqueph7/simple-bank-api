@@ -1,13 +1,12 @@
 package org.pedrodev.simple_bank_api.services;
 
-import jakarta.validation.Valid;
 import org.pedrodev.simple_bank_api.dtos.LoginDTO;
 import org.pedrodev.simple_bank_api.dtos.LoginResponseDTO;
 import org.pedrodev.simple_bank_api.dtos.RegisterDTO;
+import org.pedrodev.simple_bank_api.exceptions.TheUserAlreadyHasAnAccountException;
 import org.pedrodev.simple_bank_api.infra.security.TokenService;
 import org.pedrodev.simple_bank_api.models.User;
 import org.pedrodev.simple_bank_api.repositories.UserRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,7 +35,7 @@ public class AuthService {
     @Transactional
     public void registerUser(RegisterDTO userRegisterDTO) {
 
-        if (this.userRepository.findByCpf(userRegisterDTO.cpf()) != null)  throw new RuntimeException("User already registered in the system.");
+        if (this.userRepository.findByCpf(userRegisterDTO.cpf()) != null)  throw new TheUserAlreadyHasAnAccountException("The user already has an account.");
 
         var encryptedPassword = new BCryptPasswordEncoder().encode(userRegisterDTO.password());
 

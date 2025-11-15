@@ -1,6 +1,7 @@
 package org.pedrodev.simple_bank_api.services;
 
 import org.pedrodev.simple_bank_api.dtos.WalletResponseDTO;
+import org.pedrodev.simple_bank_api.exceptions.WalletNotFoundException;
 import org.pedrodev.simple_bank_api.models.User;
 import org.pedrodev.simple_bank_api.models.Wallet;
 import org.pedrodev.simple_bank_api.repositories.WalletRepository;
@@ -39,7 +40,7 @@ public class WalletService {
 
         Wallet wallet = walletRepository.findByUser_id(user.getId());
 
-        if (wallet == null) throw  new RuntimeException("Carteira não encontrada");
+        if (wallet == null) throw  new WalletNotFoundException("Wallet not found!");
 
         wallet.setSaldo(BigDecimal.ZERO);
         walletRepository.save(wallet);
