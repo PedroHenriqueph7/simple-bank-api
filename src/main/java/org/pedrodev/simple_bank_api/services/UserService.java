@@ -9,6 +9,7 @@ import org.pedrodev.simple_bank_api.models.User;
 import org.pedrodev.simple_bank_api.repositories.UserRepository;
 import org.pedrodev.simple_bank_api.repositories.WalletRepository;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,7 +88,8 @@ public class UserService {
                 throw new InvalidPasswordException("The new password cannot be the same as the current password.!");
             }
 
-            user.setSenha(passwordDTO.newPassword());
+            var encryptedPassword = new BCryptPasswordEncoder().encode(passwordDTO.newPassword());
+            user.setSenha(encryptedPassword);
 
 
             userRepository.save(user);
@@ -107,7 +109,7 @@ public class UserService {
 
         if (user.isAtivo()) {
             if (!passwordEncoder.matches(passwordDTO.password(), user.getPassword())) {
-                throw new InvalidPasswordException("Senha Invalida!");
+                throw new InvalidPasswordException("Invalid password!");
             }
 
             user.setAtivo(false);

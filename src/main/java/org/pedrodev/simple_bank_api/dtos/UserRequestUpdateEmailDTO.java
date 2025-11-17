@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record UserRequestUpdateEmailDTO(
-        @NotBlank(message = "The email is required.")
+        @NotBlank(message = "The email is required!!")
         @Email
         String email,
         @NotBlank(message = "A password is required.")

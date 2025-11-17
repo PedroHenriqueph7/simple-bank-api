@@ -27,21 +27,21 @@ public class UserController {
     }
 
     @PatchMapping(value = "/me/email")
-    public ResponseEntity<String> updateEmailUser(@Valid Authentication authentication, @RequestBody UserRequestUpdateEmailDTO emailUpdateDTO) {
+    public ResponseEntity<String> updateEmailUser(Authentication authentication,@Valid @RequestBody UserRequestUpdateEmailDTO emailUpdateDTO) {
 
         userService.updateEmailUser(authentication, emailUpdateDTO);
         return ResponseEntity.ok("User email update successful.");
     }
 
     @PatchMapping(value = "/me/password")
-    public ResponseEntity<String> updatePasswordUser(@Valid Authentication authentication, @RequestBody UserRequestUpdatePasswordDTO passwordUpdateDTO) {
+    public ResponseEntity<String> updatePasswordUser(Authentication authentication,@Valid @RequestBody UserRequestUpdatePasswordDTO passwordUpdateDTO) {
 
         userService.updatePasswordUser(authentication, passwordUpdateDTO);
         return ResponseEntity.ok("User password update successful.");
     }
 
     @PostMapping(value = "/me/confirm-deletion")
-    public ResponseEntity deleteUserWithPasswordConfirmation(@Valid @RequestBody UserDeletionDTO passwordDTO,Authentication authentication) {
+    public ResponseEntity deleteUserWithPasswordConfirmation(Authentication authentication,@Valid @RequestBody UserDeletionDTO passwordDTO) {
 
         userService.deleteUserWithPasswordConfirmation(authentication, passwordDTO);
         return ResponseEntity.noContent().build();
