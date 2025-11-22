@@ -37,7 +37,7 @@ public class UserService {
     public UserResponseDTO findUser(Authentication authentication) {
 
         User userLogado = (User) authentication.getPrincipal();
-        User user = userRepository.findById(userLogado.getId()).orElseThrow(() -> new UserNotFoundException("User not found!"));
+        User user = userRepository.findById(userLogado.getId()).orElseThrow(() -> new UserNotFoundException());
 
         if (user.isAtivo()) {
             return new UserResponseDTO(user.getNomeCompleto(), user.getEmail());
@@ -51,7 +51,7 @@ public class UserService {
     public void updateEmailUser(Authentication authentication, UserRequestUpdateEmailDTO userEmailUpdateDTO) {
 
         User userLogado = (User) authentication.getPrincipal();
-        User user = userRepository.findById(userLogado.getId()).orElseThrow(() -> new UserNotFoundException("User not Found"));
+        User user = userRepository.findById(userLogado.getId()).orElseThrow(() -> new UserNotFoundException());
 
         if (user.isAtivo()) {
 
@@ -72,7 +72,7 @@ public class UserService {
     public void updatePasswordUser(Authentication authentication, UserRequestUpdatePasswordDTO passwordDTO) {
 
         User userLogado = (User) authentication.getPrincipal();
-        User user = userRepository.findById(userLogado.getId()).orElseThrow(() -> new UserNotFoundException("User not Found!"));
+        User user = userRepository.findById(userLogado.getId()).orElseThrow(() -> new UserNotFoundException());
 
         if (user.isAtivo()) {
 
@@ -105,7 +105,7 @@ public class UserService {
 
 
         User userResponsible = (User) authentication.getPrincipal();
-        User user = userRepository.findById(userResponsible.getId()).orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = userRepository.findById(userResponsible.getId()).orElseThrow(() -> new UserNotFoundException());
 
         if (user.isAtivo()) {
             if (!passwordEncoder.matches(passwordDTO.password(), user.getPassword())) {

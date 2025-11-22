@@ -34,4 +34,23 @@ public class Wallet {
     }
 
 
+    public void debitar(BigDecimal valor) {
+
+        if (!this.user.isAtivo()) throw new RuntimeException("Esta conta está desativada!");
+
+        if (valor.compareTo(saldo) > 0) throw new RuntimeException("Saldo Insuficiente!");
+
+        this.saldo = this.saldo.subtract(valor);
+
+    }
+
+    public void creditar(BigDecimal valor) {
+
+        if (!this.user.isAtivo()) throw new RuntimeException("Esta conta está desativada!");
+
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("O valor deve ser positivo!");
+
+        this.saldo = this.saldo.add(valor);
+    }
+
 }

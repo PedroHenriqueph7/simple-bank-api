@@ -6,9 +6,9 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -35,5 +35,12 @@ public class Transaction {
     private User recebedor;
 
     @Column(nullable = false)
-    private LocalDateTime dataeHora;
+    private ZonedDateTime dataeHora;
+
+    public Transaction(BigDecimal valor, User pagador, User recebedor, ZonedDateTime dataeHora) {
+        this.valor = valor;
+        this.pagador = pagador;
+        this.recebedor = recebedor;
+        this.dataeHora = dataeHora;
+    }
 }

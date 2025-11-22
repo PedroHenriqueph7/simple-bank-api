@@ -5,24 +5,30 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="3" author="pedro.henrique">
-        <comment>Cria a sequência wallet_id_seq para a tabela tb_wallet</comment>
+    <changeSet id="3-structure-and-auto-data" author="pedro.henrique">
 
-        <createSequence sequenceName="wallet_id_seq"
-                        incrementBy="1"
-                        startValue="1" /> <createTable tableName="tb_wallet">
+        <createSequence sequenceName="wallet_id_seq" incrementBy="1" startValue="1"/>
 
-        <column name="id" type="BIGINT"
-                defaultValueSequenceNext="wallet_id_seq"> <constraints primaryKey="true" nullable="false"/>
-        </column>
+        <createTable tableName="tb_wallet">
+            <column name="id" type="BIGINT" defaultValueSequenceNext="wallet_id_seq">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="saldo" type="NUMERIC(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" unique="true"
+                             foreignKeyName="fk_wallet_user"
+                             references="tb_user(id)"/>
+            </column>
+        </createTable>
 
-        <column name="saldo" type="NUMERIC(10,2)">
-            <constraints nullable="false"/>
-        </column>
-        <column name="user_id" type="INT">
-            <constraints nullable="false"/>
-        </column>
-    </createTable>
+        <sql>
+            INSERT INTO tb_wallet (id, saldo, user_id)
+            SELECT nextval('wallet_id_seq'), 5500.00, id
+            FROM tb_user;
+        </sql>
 
     </changeSet>
+
 </databaseChangeLog>

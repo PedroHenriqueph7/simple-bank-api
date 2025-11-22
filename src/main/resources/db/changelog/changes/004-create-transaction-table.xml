@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="4" author="pedro.henrique">
+        <comment>Cria a sequência transaction_id_seq para a tabela tb_transaction</comment>
+
+        <createSequence sequenceName="transaction_id_seq"
+                        incrementBy="1"
+                        startValue="1" /> <createTable tableName="tb_transaction">
+
+        <column name="id" type="BIGINT"
+                defaultValueSequenceNext="transaction_id_seq"> <constraints primaryKey="true" nullable="false"/>
+        </column>
+
+        <column name="valor" type="NUMERIC(10,2)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="pagador_id" type="BIGINT">
+            <constraints nullable="false"/>
+        </column>
+        <column name="recebedor_id" type="BIGINT">
+            <constraints nullable="false"/>
+        </column>
+        <column name="datae_hora" type="TIMESTAMP WITH TIME ZONE">
+            <constraints nullable="false"/>
+        </column>
+    </createTable>
+
+    </changeSet>
+</databaseChangeLog>
