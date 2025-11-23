@@ -58,6 +58,34 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(treatResponse);
     }
 
+    @ExceptionHandler(TransactionDeclinedException.class)
+    protected  ResponseEntity<RestErrorMessage> transactionDeclineHandler(TransactionDeclinedException transactionDeclinedException) {
+
+        RestErrorMessage treatResponse = new RestErrorMessage(HttpStatus.UNPROCESSABLE_ENTITY, transactionDeclinedException.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(treatResponse);
+    }
+
+    @ExceptionHandler(TransferLimitExceededException.class)
+    protected ResponseEntity<RestErrorMessage> transferLimitExceededHandler(TransferLimitExceededException transferLimitExceededException) {
+
+        RestErrorMessage treatResponse = new RestErrorMessage(HttpStatus.UNPROCESSABLE_ENTITY, transferLimitExceededException.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(treatResponse);
+    }
+
+    @ExceptionHandler(DailyLimitExceededException.class)
+    protected ResponseEntity<RestErrorMessage> dailyLimitExceededException(DailyLimitExceededException dailyLimitExceededException) {
+
+        RestErrorMessage treatResponse = new RestErrorMessage(HttpStatus.UNPROCESSABLE_ENTITY, dailyLimitExceededException.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(treatResponse);
+    }
+
+    @ExceptionHandler(AvailableLimitExceededException.class)
+    protected ResponseEntity<RestErrorMessage> availableLimitExceededHandler(AvailableLimitExceededException availableLimitExceededException) {
+
+        RestErrorMessage treatResponse = new RestErrorMessage(HttpStatus.UNPROCESSABLE_ENTITY, String.format("Available limit exceeded, limit still available for debit R$ %.2f", availableLimitExceededException.getValorDisponivel()));
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(treatResponse);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             @NonNull MethodArgumentNotValidException ex,
