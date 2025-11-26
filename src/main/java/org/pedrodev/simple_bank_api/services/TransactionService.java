@@ -1,7 +1,9 @@
 package org.pedrodev.simple_bank_api.services;
 
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.pedrodev.simple_bank_api.dtos.TransactionRequestDTO;
 import org.pedrodev.simple_bank_api.exceptions.*;
+import org.pedrodev.simple_bank_api.infra.gateways.AuthorizationClient;
 import org.pedrodev.simple_bank_api.models.Transaction;
 import org.pedrodev.simple_bank_api.models.User;
 import org.pedrodev.simple_bank_api.models.Wallet;
@@ -13,10 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.lang.Iterable;
+import java.util.Optional;
 
 @Service
 public class TransactionService {
@@ -27,14 +27,17 @@ public class TransactionService {
 
     private final UserRepository userRepository;
 
-    public TransactionService(TransactionRepository transactionRepository, WalletRepository walletRepository, UserRepository userRepository) {
+    private final AuthorizationClient authorizationClient;
+
+    public TransactionService(TransactionRepository transactionRepository, WalletRepository walletRepository, UserRepository userRepository, AuthorizationClient authorizationClient) {
         this.transactionRepository = transactionRepository;
         this.walletRepository = walletRepository;
         this.userRepository = userRepository;
+        this.authorizationClient = authorizationClient;
     }
 
     @Transactional
-    public void performTransaction(Authentication authentication, TransactionRequestDTO infoTransaction){
+    public void performTransaction(Authentication authentication, TransactionRequestDTO infoTransaction) {
 
         User user = (User) authentication.getPrincipal();
         User pagador = userRepository.findById(user.getId()).orElseThrow(()-> new UserNotFoundException());
@@ -42,11 +45,9 @@ public class TransactionService {
 
         if (pagador.getId() == recebedor.getId()) throw new TransactionDeclinedException("Transaction declined! User cannot send money to themselves!");
 
-        Wallet walletPagador = walletRepository.findByUser_id(pagador.getId());
-        if (walletPagador == null) { throw new WalletNotFoundException("Payer's wallet not found!!");}
+        Optional<Wallet> walletPagador = Optional.ofNullable(walletRepository.findWalletForUpdateByUserId(pagador.getId()).orElseThrow(() -> new WalletNotFoundException("Payer's wallet not found!!")));
 
-        Wallet walletRecebedor = walletRepository.findByUser_id(recebedor.getId());
-        if (walletRecebedor == null) { throw  new WalletNotFoundException("Recipient's wallet not found!!");}
+        Optional<Wallet> walletRecebedor = Optional.ofNullable(walletRepository.findWalletForUpdateByUserId(recebedor.getId()).orElseThrow(()-> new WalletNotFoundException("Recipient's wallet not found!!")));
 
         ZonedDateTime dataLimite = ZonedDateTime.now().minusHours(24);
 
@@ -68,17 +69,22 @@ public class TransactionService {
         }
 
 
-        walletPagador.debitar(infoTransaction.valor());
+        walletPagador.get().debitar(infoTransaction.valor());
 
         PoliticaTaxa politicaTaxa = recebedor.getRole().getPoliticaTaxa();
 
         BigDecimal valorLiquido = politicaTaxa.calcularValorLiquido(infoTransaction.valor());
 
-        walletRecebedor.creditar(valorLiquido);
+        walletRecebedor.get().creditar(valorLiquido);
 
         Transaction transaction = new Transaction(infoTransaction.valor(), pagador, recebedor, ZonedDateTime.now());
 
-        transactionRepository.save(transaction);
+
+        if (authorizationClient.isAuthorized()) {
+            transactionRepository.save(transaction);
+        } else {
+            throw new TransactionNotAuthorizedException("Transaction not authorized!");
+        }
 
     }
 }

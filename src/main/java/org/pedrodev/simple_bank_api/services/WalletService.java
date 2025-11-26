@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 public class WalletService {
@@ -31,19 +32,17 @@ public class WalletService {
     @Transactional
     public WalletResponseDTO walletGetSaldoFindByUserId(Long userId) {
 
-        Wallet wallet = walletRepository.findByUser_id(userId);
-        return new WalletResponseDTO(wallet.getSaldo());
+        Optional<Wallet> wallet = Optional.ofNullable(walletRepository.findByUserId(userId).orElseThrow(()-> new WalletNotFoundException("Wallet not found!")));
+        return new WalletResponseDTO(wallet.get().getSaldo());
     }
 
     @Transactional
     public void updateWalletForDeactivatedUser(User user){
 
-        Wallet wallet = walletRepository.findByUser_id(user.getId());
+        Optional<Wallet> wallet = Optional.ofNullable(walletRepository.findByUserId(user.getId()).orElseThrow(()-> new WalletNotFoundException("Wallet not found!")));
 
-        if (wallet == null) throw  new WalletNotFoundException("Wallet not found!");
-
-        wallet.setSaldo(BigDecimal.ZERO);
-        walletRepository.save(wallet);
+        wallet.get().setSaldo(BigDecimal.ZERO);
+        walletRepository.save(wallet.get());
     }
 
 }

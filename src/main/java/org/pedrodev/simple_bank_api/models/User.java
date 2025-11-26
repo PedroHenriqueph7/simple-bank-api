@@ -52,6 +52,13 @@ public class User implements UserDetails {
         this.role = role;
     }
 
+    public User(boolean ativo, Long id, String nomeCompleto, UserRole role) {
+        this.ativo = ativo;
+        this.id = id;
+        this.nomeCompleto = nomeCompleto;
+        this.role = role;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
        if(this.role == UserRole.COMUM) return List.of(new SimpleGrantedAuthority("ROLE_COMUM"), new SimpleGrantedAuthority("ROLE_LOJISTA"));

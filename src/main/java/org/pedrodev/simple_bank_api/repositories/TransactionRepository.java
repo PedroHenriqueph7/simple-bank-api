@@ -18,12 +18,4 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("SELECT COALESCE(SUM(t.valor), 0) FROM Transaction t WHERE t.pagador.id = :pagadorId AND t.dataeHora >= :datalimite")
     BigDecimal findValueTransactionsByPagador_id24Hours(@Param("pagadorId") Long pagadorId, @Param("datalimite") ZonedDateTime data);
 
-    // Teste A: Remove a data (Verifica se o problema é o ID)
-    @Query("SELECT COALESCE(SUM(t.valor), 0) FROM Transaction t WHERE t.pagador.id = :pagadorId")
-    BigDecimal somaTotalSemData(@Param("pagadorId") Long pagadorId);
-
-    // Teste B: Remove o usuário (Verifica se o problema é a Data)
-// CUIDADO: Isso soma TUDO do banco nas ultimas 24h. Use apenas em ambiente de dev.
-    @Query("SELECT COALESCE(SUM(t.valor), 0) FROM Transaction t WHERE t.dataeHora >= :datalimite")
-    BigDecimal somaTotalSemUsuario(@Param("datalimite") ZonedDateTime data);
 }

@@ -1,5 +1,7 @@
 package org.pedrodev.simple_bank_api.web.exception;
 
+import org.hibernate.dialect.lock.PessimisticEntityLockException;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -84,6 +86,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         RestErrorMessage treatResponse = new RestErrorMessage(HttpStatus.UNPROCESSABLE_ENTITY, String.format("Available limit exceeded, limit still available for debit R$ %.2f", availableLimitExceededException.getValorDisponivel()));
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(treatResponse);
+    }
+
+    @ExceptionHandler(PessimisticLockingFailureException.class)
+    protected ResponseEntity<RestErrorMessage> pessimisticEntityLockHandler() {
+
+        RestErrorMessage treatResponse = new RestErrorMessage(HttpStatus.CONFLICT, "The wallet is currently processing another transaction. Please wait a few moments and try again.");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(treatResponse);
+    }
+
+    @ExceptionHandler(TransactionNotAuthorizedException.class)
+    protected  ResponseEntity<RestErrorMessage> transactionNotAuthorizedHandler(TransactionNotAuthorizedException transactionNotAuthorizedException) {
+
+        RestErrorMessage treatResponse = new RestErrorMessage(HttpStatus.FORBIDDEN, transactionNotAuthorizedException.getMessage());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(treatResponse);
     }
 
     @Override
