@@ -103,6 +103,22 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(treatResponse);
     }
 
+    @ExceptionHandler(DepositNotFoundException.class)
+    protected ResponseEntity<RestErrorMessage> depositNotFoundHandler(DepositNotFoundException depositNotFoundException) {
+
+        RestErrorMessage treatResponse = new RestErrorMessage(HttpStatus.NOT_FOUND, depositNotFoundException.getMessage());
+
+        return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(treatResponse);
+    }
+
+    @ExceptionHandler(DepositInvalidException.class)
+    protected  ResponseEntity<RestErrorMessage> depositInvalidHandler(DepositInvalidException depositInvalidException) {
+
+        RestErrorMessage treatResponse = new RestErrorMessage(HttpStatus.UNPROCESSABLE_ENTITY, depositInvalidException.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(treatResponse);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             @NonNull MethodArgumentNotValidException ex,

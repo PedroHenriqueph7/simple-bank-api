@@ -6,7 +6,9 @@ import org.pedrodev.simple_bank_api.models.enums.Status;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
+@Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,5 +38,13 @@ public class Deposit {
     private String pixId;
 
     @Column(nullable = false)
-    private LocalDateTime dataExpiracao;
+    private ZonedDateTime dataExpiracao;
+
+    public Deposit(User user, BigDecimal valor, Status statusAtual, String pixId, ZonedDateTime dataExpiracao) {
+        this.user = user;
+        this.valor = valor;
+        this.statusAtual = statusAtual;
+        this.pixId = pixId;
+        this.dataExpiracao = dataExpiracao;
+    }
 }

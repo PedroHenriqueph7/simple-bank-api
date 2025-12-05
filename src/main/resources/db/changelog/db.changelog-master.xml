@@ -9,4 +9,5 @@
     <include file="db/changelog/changes/002-insert-initial-users.xml"/>
     <include file="db/changelog/changes/003-create-wallet-table.xml"/>
     <include file="db/changelog/changes/004-create-transaction-table.xml"/>
+    <include file="db/changelog/changes/005-create-deposit-table.xml"/>
 </databaseChangeLog>
