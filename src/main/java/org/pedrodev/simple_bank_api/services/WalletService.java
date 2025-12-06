@@ -32,17 +32,17 @@ public class WalletService {
     @Transactional
     public WalletResponseDTO walletGetSaldoFindByUserId(Long userId) {
 
-        Optional<Wallet> wallet = Optional.ofNullable(walletRepository.findByUserId(userId).orElseThrow(()-> new WalletNotFoundException("Wallet not found!")));
-        return new WalletResponseDTO(wallet.get().getSaldo());
+        Wallet wallet = walletRepository.findByUserId(userId).orElseThrow(()-> new WalletNotFoundException("Wallet not found!"));
+        return new WalletResponseDTO(wallet.getSaldo());
     }
 
     @Transactional
     public void updateWalletForDeactivatedUser(User user){
 
-        Optional<Wallet> wallet = Optional.ofNullable(walletRepository.findByUserId(user.getId()).orElseThrow(()-> new WalletNotFoundException("Wallet not found!")));
+        Wallet wallet = walletRepository.findByUserId(user.getId()).orElseThrow(()-> new WalletNotFoundException("Wallet not found!"));
 
-        wallet.get().setSaldo(BigDecimal.ZERO);
-        walletRepository.save(wallet.get());
+        wallet.setSaldo(BigDecimal.ZERO);
+        walletRepository.save(wallet);
     }
 
 }

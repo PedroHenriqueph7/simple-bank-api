@@ -29,13 +29,11 @@ import java.util.UUID;
 public class DepositService {
 
     private DepositRepository depositRepository;
-    private UserRepository userRepository;
     private WalletRepository walletRepository;
 
-    public DepositService(DepositRepository depositRepository, UserRepository userRepository, WalletRepository walletRepository) {
+    public DepositService(DepositRepository depositRepository, WalletRepository walletRepository) {
 
         this.depositRepository = depositRepository;
-        this.userRepository = userRepository;
         this.walletRepository = walletRepository;
     }
 
@@ -57,11 +55,7 @@ public class DepositService {
     @Transactional
     public void confirmPayment(WebHookPaymentDTO webHookPaymentDTO) {
 
-        Deposit deposit = depositRepository.findDepositByPixId(webHookPaymentDTO.pixCode());
-
-        if (deposit == null) {
-            throw new DepositNotFoundException("Deposit not found!");
-        }
+        Deposit deposit = depositRepository.findDepositByPixId(webHookPaymentDTO.pixCode()).orElseThrow(()->new DepositNotFoundException("Deposit not found!")) ;
 
         if (deposit.getStatusAtual() == Status.CONCLUIDO) {
             return;
@@ -69,7 +63,7 @@ public class DepositService {
 
         ZonedDateTime dataEHorarioPagamentoDeposito = ZonedDateTime.now();
 
-        if (deposit.getDataExpiracao().isAfter(dataEHorarioPagamentoDeposito) ) {
+        if (dataEHorarioPagamentoDeposito.isAfter(deposit.getDataExpiracao()) ) {
             deposit.setStatusAtual(Status.EXPIRADO);
 
             depositRepository.save(deposit);
@@ -77,9 +71,10 @@ public class DepositService {
         }
 
 
-        Optional<Wallet> wallet = Optional.ofNullable(walletRepository.findByUserId(deposit.getUser().getId())).orElseThrow(()-> new WalletNotFoundException("Wallet not found!!"));
+        Wallet walletUser = walletRepository.findByUserId(deposit.getUser().getId())
+                .orElseThrow(() -> new WalletNotFoundException("Wallet not found!!"));
 
-        wallet.get().creditar(deposit.getValor());
+        walletUser.creditar(deposit.getValor());
 
         deposit.setStatusAtual(Status.CONCLUIDO);
 
