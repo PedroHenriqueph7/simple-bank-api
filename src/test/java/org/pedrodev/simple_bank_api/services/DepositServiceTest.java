@@ -1,6 +1,5 @@
 package org.pedrodev.simple_bank_api.services;
 
-import org.assertj.core.api.ZonedDateTimeAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,6 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.pedrodev.simple_bank_api.dtos.SolicitDepositDTO;
 import org.pedrodev.simple_bank_api.dtos.SolicitDepositResponseDTO;
 import org.pedrodev.simple_bank_api.dtos.WebHookPaymentDTO;
+import org.pedrodev.simple_bank_api.exceptions.DepositInvalidException;
+import org.pedrodev.simple_bank_api.exceptions.WalletNotFoundException;
 import org.pedrodev.simple_bank_api.models.Deposit;
 import org.pedrodev.simple_bank_api.models.User;
 import org.pedrodev.simple_bank_api.models.Wallet;
@@ -101,11 +102,9 @@ class DepositServiceTest {
     @Nested
     class confirmPayment {
 
-    }
-
         @Test
         @DisplayName("deve confirmar o pagamento do deposito com sucesoo")
-        void confirmPayment() {
+        void confirmPaymentWithSucess() {
 
             //arrange
             String pixCode = "2aiwn239xnn92n93xol21lam29l4cd";
@@ -133,4 +132,87 @@ class DepositServiceTest {
             assertEquals(Status.CONCLUIDO, depositSalvo.getStatusAtual());
 
         }
+
+        @Test
+        @DisplayName("Não pode continuar a operação de confirm payment! ")
+        void ConfirmPaymentWithError() {
+
+            //arrange
+            String pixCode = "2aiwn239xnn92n93xol21lam29l4cd";
+            WebHookPaymentDTO webHookPaymentDTO = new WebHookPaymentDTO(pixCode);
+            Deposit newDeposit = new Deposit();
+
+            UserRole userRole = UserRole.COMUM;
+            User user = new User(true, 1L, "Phtest", userRole);
+            BigDecimal valorSolicitadoDeposito = BigDecimal.valueOf(500);
+            ZonedDateTime dataExpiracao = ZonedDateTime.now().plusMinutes(30);
+
+            Deposit depositSalvo = new Deposit(1L, user, valorSolicitadoDeposito, Status.CONCLUIDO, pixCode,dataExpiracao);
+
+            when(depositRepository.findDepositByPixId(pixCode)).thenReturn(Optional.of(depositSalvo));
+
+            BigDecimal saldoInicial = BigDecimal.ZERO;
+            Wallet walletUser = new Wallet(saldoInicial, user);
+
+            //Utilizo o Lenient pois ele fala para o spring se não chamar esta linha não tem problema, não precisa lançar um erro
+            lenient().when(walletRepository.findByUserId(user.getId())).thenReturn(Optional.of(walletUser));
+
+
+            //act
+            depositService.confirmPayment(webHookPaymentDTO);
+            //assert
+
+            assertEquals(saldoInicial, walletUser.getSaldo());
+
+        }
+        @Test
+        @DisplayName("Não confirmar a operação pois o deposito ja esta expirado!")
+        void noConfirmPaymentDateExpired() {
+            //arrange
+            String pixCode = "2aiwn239xnn92n93xol21lam29l4cd";
+            WebHookPaymentDTO webHookPaymentDTO = new WebHookPaymentDTO(pixCode);
+
+            UserRole userRole = UserRole.COMUM;
+            User user = new User(true, 1L, "Phtest", userRole);
+            BigDecimal valorSolicitadoDeposito = BigDecimal.valueOf(500);
+            ZonedDateTime dataExpiracao = ZonedDateTime.now().minusMinutes(5);
+
+            Deposit depositSalvo = new Deposit(1L, user, valorSolicitadoDeposito, Status.PENDENTE, pixCode,dataExpiracao);
+
+            when(depositRepository.findDepositByPixId(pixCode)).thenReturn(Optional.of(depositSalvo));
+
+
+            //act & assert
+            assertThrows(DepositInvalidException.class, ()->  depositService.confirmPayment(webHookPaymentDTO));
+
+            verify(depositRepository, times(1)).save(depositArgumentCaptor.capture());
+            assertEquals(Status.EXPIRADO, depositArgumentCaptor.getValue().getStatusAtual());
+
+        }
+
+        @Test
+        @DisplayName("Não pode confimar a operação pois a carteira não foi encontrada!")
+        void noConfirmPaymentWalletNotFound() {
+            //arrange
+            String pixCode = "2aiwn239xnn92n93xol21lam29l4cd";
+            WebHookPaymentDTO webHookPaymentDTO = new WebHookPaymentDTO(pixCode);
+
+            UserRole userRole = UserRole.COMUM;
+            User user = new User(true, 1L, "Phtest", userRole);
+            BigDecimal valorSolicitadoDeposito = BigDecimal.valueOf(500);
+            ZonedDateTime dataExpiracao = ZonedDateTime.now().plusMinutes(30);
+
+            Deposit depositSalvo = new Deposit(1L, user, valorSolicitadoDeposito, Status.PENDENTE, pixCode,dataExpiracao);
+
+            when(depositRepository.findDepositByPixId(pixCode)).thenReturn(Optional.of(depositSalvo));
+
+            when(walletRepository.findByUserId(user.getId())).thenReturn(Optional.empty());
+
+            //act assert
+
+            assertThrows(WalletNotFoundException.class, ()-> depositService.confirmPayment(webHookPaymentDTO));
+
+        }
+    }
+
 }
