@@ -6,11 +6,20 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="4" author="pedro.henrique">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="tb_deposit"/>
+            </not>
+        </preConditions>
+
         <comment>Cria a sequência transaction_id_seq para a tabela tb_transaction</comment>
 
         <createSequence sequenceName="deposit_id_seq"
                         incrementBy="1"
-                        startValue="1" /> <createTable tableName="tb_deposit">
+                        startValue="1" />
+
+        <createTable tableName="tb_deposit">
 
         <column name="id" type="BIGINT"
                 defaultValueSequenceNext="deposit_id_seq"> <constraints primaryKey="true" nullable="false"/>

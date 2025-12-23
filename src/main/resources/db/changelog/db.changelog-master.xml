@@ -5,8 +5,10 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+
     <include file="db/changelog/changes/001-create-user-table.xml"/>
-    <include file="db/changelog/changes/002-insert-initial-users.xml"/>
+    <!--Descomentar o inserts de user no profile de test-->
+    <!--<include file="db/changelog/changes/002-insert-initial-users.xml"/>-->
     <include file="db/changelog/changes/003-create-wallet-table.xml"/>
     <include file="db/changelog/changes/004-create-transaction-table.xml"/>
     <include file="db/changelog/changes/005-create-deposit-table.xml"/>

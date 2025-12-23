@@ -36,4 +36,5 @@ Thumbs.db
 
 ### Arquivos de Segredos e Configuração Local ###
 application-local.properties
+application-secrets.properties
 .env

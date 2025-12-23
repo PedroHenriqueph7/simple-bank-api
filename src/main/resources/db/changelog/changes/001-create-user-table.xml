@@ -6,11 +6,19 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="1" author="pedro.henrique">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="tb_user"/>
+            </not>
+        </preConditions>
         <comment>Cria a sequência user_id_seq para a tabela tb_user</comment>
 
         <createSequence sequenceName="user_id_seq"
                         incrementBy="1"
-                        startValue="1" /> <createTable tableName="tb_user">
+                        startValue="1" />
+
+        <createTable tableName="tb_user">
 
         <column name="id" type="BIGINT"
                 defaultValueSequenceNext="user_id_seq"> <constraints primaryKey="true" nullable="false"/>
