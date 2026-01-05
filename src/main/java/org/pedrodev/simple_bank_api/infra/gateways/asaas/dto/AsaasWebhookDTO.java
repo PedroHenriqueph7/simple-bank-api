@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @JsonIgnoreProperties(ignoreUnknown = true) // Ignorar Campos que não serão utilizados
 public record AsaasWebhookDTO(
         String event,
-        AsaasBillPaymentDTO billPayment
+        AsaasBillPaymentDTO bill
 ) {
 
     public record AsaasBillPaymentDTO(

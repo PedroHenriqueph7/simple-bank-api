@@ -98,46 +98,46 @@ public class BillPaymentService {
     @Transactional
     public void confirmPaymentTicket(AsaasWebhookDTO webhookDto){
 
-
-        if (!webhookDto.event().startsWith("BILL_PAYMENT")) {
+        if (!webhookDto.event().startsWith("BILL_PAID")) {
             return;
         }
 
-        String idAsaas = webhookDto.billPayment().id();
+        String idAsaas = webhookDto.bill().id();
 
-        if ("BILL_PAYMENT_CONFIRMED".equals(webhookDto.event())) {
-
-            BillPayment ticket = billPaymentRepository.findByExternalReference(idAsaas)
+        BillPayment ticket = billPaymentRepository.findByExternalReference(idAsaas)
                         .orElseThrow(() -> new PaymentSlipNotFoundException());
 
+        if (PaymentStatus.PAID.equals(ticket.getPaymentStatus())) return;
 
-            if (PaymentStatus.PAID.equals(ticket.getPaymentStatus())) return;
+        ticket.setPaymentStatus(PaymentStatus.PAID);
+        billPaymentRepository.save(ticket);
 
-            ticket.setPaymentStatus(PaymentStatus.PAID);
-            billPaymentRepository.save(ticket);
+        System.out.println("PAGAMENTO DE CONTA CONFIRMADO: " + idAsaas);
 
-            System.out.println("PAGAMENTO DE CONTA CONFIRMADO: " + idAsaas);
+    }
 
-        } else if ("BILL_PAYMENT_FAILED".equals(webhookDto.event()) || "BILL_PAYMENT_CANCELLED".equals(webhookDto.event()) || "BILL_PAYMENT_BANK_PROCESSING_ERROR".equals(webhookDto.event())) {
+    @Transactional
+    public void reversePayment(AsaasWebhookDTO webhookDTO) {
 
-            BillPayment conta = billPaymentRepository.findByExternalReference(idAsaas)
-                        .orElseThrow(() -> new PaymentSlipNotFoundException());
+        String idAsaas = webhookDTO.bill().id();
 
-            if (PaymentStatus.REFUNDED.equals(conta.getPaymentStatus())) return;
+        BillPayment conta = billPaymentRepository.findByExternalReference(idAsaas)
+                .orElseThrow(() -> new PaymentSlipNotFoundException());
+
+        if (PaymentStatus.REFUNDED.equals(conta.getPaymentStatus())) return;
 
 
-            User user = conta.getPayer();
-            Wallet walletPayer = walletRepository.findByUserId(user.getId())
-                        .orElseThrow(() -> new WalletNotFoundException());
+        User user = conta.getPayer();
+        Wallet walletPayer = walletRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new WalletNotFoundException());
 
-            walletPayer.creditar(conta.getValue());
-            walletRepository.save(walletPayer);
+        walletPayer.creditar(conta.getValue());
+        walletRepository.save(walletPayer);
 
-            conta.setPaymentStatus(PaymentStatus.REFUNDED);
-            billPaymentRepository.save(conta);
+        conta.setPaymentStatus(PaymentStatus.REFUNDED);
+        billPaymentRepository.save(conta);
 
-            System.out.println("FALHA NO PAGAMENTO. ESTORNO REALIZADO!");
-        }
+        System.out.println("ESTORNO REALIZADO!");
 
     }
 
