@@ -1,5 +1,6 @@
 package org.pedrodev.simple_bank_api.repositories;
 
+import org.pedrodev.simple_bank_api.dtos.ExtratoBancarioDTO;
 import org.pedrodev.simple_bank_api.models.Transaction;
 import org.pedrodev.simple_bank_api.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,37 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("SELECT COALESCE(SUM(t.valor), 0) FROM Transaction t WHERE t.pagador.id = :pagadorId AND t.dataeHora >= :datalimite")
     BigDecimal findValueTransactionsByPagador_id24Hours(@Param("pagadorId") Long pagadorId, @Param("datalimite") ZonedDateTime data);
 
+    @Query(value = """ 
+        SELECT * FROM (
+            SELECT\s
+                d.valor as valor,\s
+                'Depósito' as descricao,\s
+                d.data_hora as data_movimentacao, 
+                'DEPOSIT' as tipo
+            FROM tb_deposit d
+            WHERE d.user_id = :userId
+        
+            UNION ALL
+        
+            SELECT\s
+                -t.valor,\s
+                'Transferência',\s
+                t.datae_hora,
+                'TRANSACTION'
+            FROM tb_transaction t
+            WHERE t.pagador_id = :userId
+        
+            UNION ALL
+        
+            SELECT\s
+                -bp.value,\s
+                bp.description,\s
+                bp.created_at,\s
+                'BILL_PAYMENT'
+            FROM tb_bill_payment bp
+            WHERE bp.user_id = :userId
+        ) as extrato
+        ORDER BY data_movimentacao DESC;
+    """, nativeQuery = true)
+    List<ExtratoBancarioDTO> buscarResumoExtrato(@Param("userId") Long userId);
 }

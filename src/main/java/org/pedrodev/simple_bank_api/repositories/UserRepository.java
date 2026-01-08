@@ -1,5 +1,6 @@
 package org.pedrodev.simple_bank_api.repositories;
 
+import org.pedrodev.simple_bank_api.dtos.ExtratoBancarioDTO;
 import org.pedrodev.simple_bank_api.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -7,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
