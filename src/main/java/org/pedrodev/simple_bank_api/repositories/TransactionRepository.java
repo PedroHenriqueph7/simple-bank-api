@@ -48,7 +48,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                 bp.created_at,\s
                 'BILL_PAYMENT'
             FROM tb_bill_payment bp
-            WHERE bp.user_id = :userId
+            WHERE bp.user_id = :userId AND bp.payment_status = 'PAID'
         ) as extrato
         ORDER BY data_movimentacao DESC;
     """, nativeQuery = true)

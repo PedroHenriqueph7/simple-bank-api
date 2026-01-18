@@ -3,6 +3,8 @@ package org.pedrodev.simple_bank_api.models;
 import jakarta.persistence.*;
 import lombok.*;
 import org.pedrodev.simple_bank_api.models.enums.Status;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,6 +15,7 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "tb_deposit")
 public class Deposit {
@@ -39,6 +42,10 @@ public class Deposit {
 
     @Column(nullable = false)
     private ZonedDateTime dataExpiracao;
+
+    @Column(nullable = false, updatable = false)
+    @CreatedDate
+    private LocalDateTime dataHora;
 
     public Deposit(User user, BigDecimal valor, Status statusAtual, String pixId, ZonedDateTime dataExpiracao) {
         this.user = user;
