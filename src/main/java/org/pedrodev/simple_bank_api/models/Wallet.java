@@ -2,6 +2,9 @@ package org.pedrodev.simple_bank_api.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.pedrodev.simple_bank_api.exceptions.DeactivatedUserException;
+import org.pedrodev.simple_bank_api.exceptions.IllegalInputArgumentException;
+import org.pedrodev.simple_bank_api.exceptions.InsufficientWalletBalance;
 
 import java.math.BigDecimal;
 
@@ -36,9 +39,9 @@ public class Wallet {
 
     public void debitar(BigDecimal valor) {
 
-        if (!this.user.isAtivo()) throw new RuntimeException("Esta conta está desativada!");
+        if (!this.user.isAtivo()) throw new DeactivatedUserException("Esta conta está desativada!");
 
-        if (valor.compareTo(saldo) > 0) throw new RuntimeException("Saldo Insuficiente!");
+        if (valor.compareTo(saldo) > 0) throw new InsufficientWalletBalance("Saldo Insuficiente!");
 
         this.saldo = this.saldo.subtract(valor);
 
@@ -46,9 +49,9 @@ public class Wallet {
 
     public void creditar(BigDecimal valor) {
 
-        if (!this.user.isAtivo()) throw new RuntimeException("Esta conta está desativada!");
+        if (!this.user.isAtivo()) throw new DeactivatedUserException("Esta conta está desativada!");
 
-        if (valor.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("O valor deve ser positivo!");
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalInputArgumentException("O valor deve ser positivo!");
 
         this.saldo = this.saldo.add(valor);
     }

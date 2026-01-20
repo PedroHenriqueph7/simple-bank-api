@@ -126,6 +126,20 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(treatResponse);
     }
 
+    @ExceptionHandler(InsufficientWalletBalance.class)
+    protected ResponseEntity<RestErrorMessage> insufficientWalletBalanceHandler(InsufficientWalletBalance exception){
+
+        RestErrorMessage treatResponse = new RestErrorMessage(HttpStatus.UNPROCESSABLE_ENTITY, exception.getMessage());
+        return  ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(treatResponse);
+    }
+
+    @ExceptionHandler(IllegalInputArgumentException.class)
+    protected ResponseEntity<RestErrorMessage> illegalInputArgumentHandler(IllegalArgumentException exception){
+
+        RestErrorMessage treatResponse = new RestErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(treatResponse);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             @NonNull MethodArgumentNotValidException ex,

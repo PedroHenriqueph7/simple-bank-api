@@ -45,9 +45,9 @@ public class TransactionService {
 
         if (pagador.getId() == recebedor.getId()) throw new TransactionDeclinedException("Transaction declined! User cannot send money to themselves!");
 
-        Optional<Wallet> walletPagador = Optional.ofNullable(walletRepository.findWalletForUpdateByUserId(pagador.getId()).orElseThrow(() -> new WalletNotFoundException("Payer's wallet not found!!")));
+        Wallet walletPagador = walletRepository.findWalletForUpdateByUserId(pagador.getId()).orElseThrow(() -> new WalletNotFoundException("Payer's wallet not found!!"));
 
-        Optional<Wallet> walletRecebedor = Optional.ofNullable(walletRepository.findWalletForUpdateByUserId(recebedor.getId()).orElseThrow(()-> new WalletNotFoundException("Recipient's wallet not found!!")));
+        Wallet walletRecebedor = walletRepository.findWalletForUpdateByUserId(recebedor.getId()).orElseThrow(()-> new WalletNotFoundException("Recipient's wallet not found!!"));
 
         ZonedDateTime dataLimite = ZonedDateTime.now().minusHours(24);
 
@@ -69,22 +69,20 @@ public class TransactionService {
         }
 
 
-        walletPagador.get().debitar(infoTransaction.valor());
+        walletPagador.debitar(infoTransaction.valor());
 
         PoliticaTaxa politicaTaxa = recebedor.getRole().getPoliticaTaxa();
 
         BigDecimal valorLiquido = politicaTaxa.calcularValorLiquido(infoTransaction.valor());
 
-        walletRecebedor.get().creditar(valorLiquido);
+        walletRecebedor.creditar(valorLiquido);
 
         Transaction transaction = new Transaction(infoTransaction.valor(), pagador, recebedor, ZonedDateTime.now());
-
 
         if (authorizationClient.isAuthorized()) {
             transactionRepository.save(transaction);
         } else {
             throw new TransactionNotAuthorizedException("Transaction not authorized!");
         }
-
     }
 }
