@@ -1,6 +1,7 @@
 package org.pedrodev.simple_bank_api.repositories;
 
 import org.pedrodev.simple_bank_api.models.BillPayment;
+import org.pedrodev.simple_bank_api.models.enums.PaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +12,5 @@ public interface BillPaymentRepository extends JpaRepository<BillPayment, Long> 
 
     Optional<BillPayment> findByExternalReference(String externalReference);
 
+    Boolean existsByIdentificationFieldAndPaymentStatus(String identificationField, PaymentStatus status);
 }

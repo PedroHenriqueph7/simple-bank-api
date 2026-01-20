@@ -119,6 +119,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(treatResponse);
     }
 
+    @ExceptionHandler(ThisInvoiceHasAlreadyBeenPaidException.class)
+    protected  ResponseEntity<RestErrorMessage> thisInvoiceHasAlreadyBeenPaidHandler(ThisInvoiceHasAlreadyBeenPaidException exception){
+
+        RestErrorMessage treatResponse = new RestErrorMessage(HttpStatus.UNPROCESSABLE_ENTITY, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(treatResponse);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             @NonNull MethodArgumentNotValidException ex,

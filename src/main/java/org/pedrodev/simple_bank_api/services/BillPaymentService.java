@@ -1,9 +1,6 @@
 package org.pedrodev.simple_bank_api.services;
 
-import org.pedrodev.simple_bank_api.exceptions.InsufficientWalletBalance;
-import org.pedrodev.simple_bank_api.exceptions.PaymentSlipNotFoundException;
-import org.pedrodev.simple_bank_api.exceptions.UserNotFoundException;
-import org.pedrodev.simple_bank_api.exceptions.WalletNotFoundException;
+import org.pedrodev.simple_bank_api.exceptions.*;
 import org.pedrodev.simple_bank_api.dtos.BillPaymentRequestDTO;
 import org.pedrodev.simple_bank_api.infra.gateways.asaas.AsaasClient;
 import org.pedrodev.simple_bank_api.infra.gateways.asaas.dto.AsaasBillRequestDTO;
@@ -21,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 public class BillPaymentService {
@@ -46,6 +44,10 @@ public class BillPaymentService {
         User payer = userRepository.findById(user.getId()).orElseThrow(()-> new UserNotFoundException());
 
         Wallet walletPayer = walletRepository.findByUserId(payer.getId()).orElseThrow(()-> new WalletNotFoundException());
+
+        Boolean jaPago = billPaymentRepository.existsByIdentificationFieldAndPaymentStatus(billPaymentRequestDTO.identificationField(), PaymentStatus.PAID);
+
+        if (jaPago) { throw new ThisInvoiceHasAlreadyBeenPaidException();}
 
         if (walletPayer.getSaldo().compareTo(billPaymentRequestDTO.value()) < 0) {
             throw new InsufficientWalletBalance();
@@ -104,8 +106,7 @@ public class BillPaymentService {
 
         String idAsaas = webhookDto.bill().id();
 
-        BillPayment ticket = billPaymentRepository.findByExternalReference(idAsaas)
-                        .orElseThrow(() -> new PaymentSlipNotFoundException());
+        BillPayment ticket = billPaymentRepository.findByExternalReference(idAsaas).orElseThrow(()-> new PaymentSlipNotFoundException());
 
         if (PaymentStatus.PAID.equals(ticket.getPaymentStatus())) return;
 
@@ -120,9 +121,8 @@ public class BillPaymentService {
     public void reversePayment(AsaasWebhookDTO webhookDTO) {
 
         String idAsaas = webhookDTO.bill().id();
-
-        BillPayment conta = billPaymentRepository.findByExternalReference(idAsaas)
-                .orElseThrow(() -> new PaymentSlipNotFoundException());
+       
+        BillPayment conta = billPaymentRepository.findByExternalReference(idAsaas).orElseThrow(() -> new PaymentSlipNotFoundException());
 
         if (PaymentStatus.REFUNDED.equals(conta.getPaymentStatus())) return;
 
