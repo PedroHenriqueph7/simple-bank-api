@@ -43,7 +43,7 @@ public class BillPaymentService {
         User user = (User) authentication.getPrincipal();
         User payer = userRepository.findById(user.getId()).orElseThrow(()-> new UserNotFoundException());
 
-        Wallet walletPayer = walletRepository.findByUserId(payer.getId()).orElseThrow(()-> new WalletNotFoundException());
+        Wallet walletPayer = walletRepository.findWalletForUpdateByUserId(payer.getId()).orElseThrow(()-> new WalletNotFoundException());
 
         Boolean jaPago = billPaymentRepository.existsByIdentificationFieldAndPaymentStatus(billPaymentRequestDTO.identificationField(), PaymentStatus.PAID);
 

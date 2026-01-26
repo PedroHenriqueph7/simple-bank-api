@@ -15,8 +15,9 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
 
     Optional<Wallet> findByUserId(Long userId);
 
-    // TODO: Reativar locks e hints quando migrar para PostgreSQL (H2 não suporta NOWAIT corretamente)
-    // @Lock(LockModeType.PESSIMISTIC_WRITE)
-    // @QueryHints(@QueryHint(name = "jakarta.persistence.lock.timeout", value = "0"))
+    // Bloqueio a linha pois tenho intensao de alter-lo algum registro no bd da wallet então ninguem pode ler/editar ou alterar ate eu terminar a transacao
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    // Defina o comportamento caso esta linha esteja bloqueada, e "value = 0" significa não espere(caso esteja Bloqueada), lance um erro imediato
+    @QueryHints(@QueryHint(name = "jakarta.persistence.lock.timeout", value = "0"))
     Optional<Wallet> findWalletForUpdateByUserId(Long userId);
 }
