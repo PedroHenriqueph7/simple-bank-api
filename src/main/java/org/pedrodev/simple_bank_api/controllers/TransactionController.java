@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.pedrodev.simple_bank_api.controllers.docs.TransactionsControllerDocs;
 import org.pedrodev.simple_bank_api.dtos.TransactionRequestDTO;
 import org.pedrodev.simple_bank_api.services.TransactionService;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/transactions")
-@Tag(name = "Transações", description = "Endpoints para realizar transferencias entre usuarios")
-public class TransactionController {
+public class TransactionController implements TransactionsControllerDocs {
 
     private final TransactionService transactionService;
 
@@ -25,13 +25,7 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @Operation(summary = "Realizar Transferencia", description = "Transfere valor entre usuarios(lojistas só recebem)")
-    @ApiResponses( value = {
-            @ApiResponse(responseCode = "200", description = "Transação realizada com sucesso!"),
-            @ApiResponse(responseCode = "404", description = "Usuario Pagador ou Recebedor, ou carteira não encontrado"),
-            @ApiResponse(responseCode = "422", description = "Dados corretos, mas invalidos na regra de negocio"),
-            @ApiResponse(responseCode = "403", description = "Autenticado, mas sem permissão")
-    })
+    @Override
     @PostMapping(value = "/transaction")
     public ResponseEntity<String> performTransaction(Authentication authentication, @Valid @RequestBody TransactionRequestDTO infoTransactionDTO) {
         transactionService.performTransaction(authentication, infoTransactionDTO);
