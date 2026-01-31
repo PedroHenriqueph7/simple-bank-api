@@ -5,24 +5,18 @@ import org.pedrodev.simple_bank_api.dtos.SolicitDepositResponseDTO;
 import org.pedrodev.simple_bank_api.dtos.WebHookPaymentDTO;
 import org.pedrodev.simple_bank_api.exceptions.DepositInvalidException;
 import org.pedrodev.simple_bank_api.exceptions.DepositNotFoundException;
-import org.pedrodev.simple_bank_api.exceptions.UserNotFoundException;
 import org.pedrodev.simple_bank_api.exceptions.WalletNotFoundException;
 import org.pedrodev.simple_bank_api.models.Deposit;
 import org.pedrodev.simple_bank_api.models.User;
 import org.pedrodev.simple_bank_api.models.Wallet;
 import org.pedrodev.simple_bank_api.models.enums.Status;
 import org.pedrodev.simple_bank_api.repositories.DepositRepository;
-import org.pedrodev.simple_bank_api.repositories.UserRepository;
 import org.pedrodev.simple_bank_api.repositories.WalletRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.Optional;
-import java.util.Random;
 import java.util.UUID;
 
 @Service

@@ -1,5 +1,6 @@
 package org.pedrodev.simple_bank_api.services;
 
+import org.assertj.core.api.ZonedDateTimeAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,7 @@ import org.pedrodev.simple_bank_api.repositories.WalletRepository;
 import org.springframework.security.core.Authentication;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
@@ -115,7 +117,7 @@ class DepositServiceTest {
             BigDecimal valorSolicitadoDeposito = BigDecimal.valueOf(500);
             ZonedDateTime dataExpiracao = ZonedDateTime.now().plusMinutes(30);
 
-            Deposit depositSalvo = new Deposit(1L, user, valorSolicitadoDeposito, Status.PENDENTE, pixCode,dataExpiracao);
+            Deposit depositSalvo = new Deposit(user, valorSolicitadoDeposito, Status.PENDENTE, pixCode,dataExpiracao);
 
             when(depositRepository.findDepositByPixId(pixCode)).thenReturn(Optional.of(depositSalvo));
 
@@ -147,7 +149,7 @@ class DepositServiceTest {
             BigDecimal valorSolicitadoDeposito = BigDecimal.valueOf(500);
             ZonedDateTime dataExpiracao = ZonedDateTime.now().plusMinutes(30);
 
-            Deposit depositSalvo = new Deposit(1L, user, valorSolicitadoDeposito, Status.CONCLUIDO, pixCode,dataExpiracao);
+            Deposit depositSalvo = new Deposit(user, valorSolicitadoDeposito, Status.CONCLUIDO, pixCode,dataExpiracao);
 
             when(depositRepository.findDepositByPixId(pixCode)).thenReturn(Optional.of(depositSalvo));
 
@@ -177,7 +179,7 @@ class DepositServiceTest {
             BigDecimal valorSolicitadoDeposito = BigDecimal.valueOf(500);
             ZonedDateTime dataExpiracao = ZonedDateTime.now().minusMinutes(5);
 
-            Deposit depositSalvo = new Deposit(1L, user, valorSolicitadoDeposito, Status.PENDENTE, pixCode,dataExpiracao);
+            Deposit depositSalvo = new Deposit(user, valorSolicitadoDeposito, Status.PENDENTE, pixCode,dataExpiracao);
 
             when(depositRepository.findDepositByPixId(pixCode)).thenReturn(Optional.of(depositSalvo));
 
@@ -202,7 +204,7 @@ class DepositServiceTest {
             BigDecimal valorSolicitadoDeposito = BigDecimal.valueOf(500);
             ZonedDateTime dataExpiracao = ZonedDateTime.now().plusMinutes(30);
 
-            Deposit depositSalvo = new Deposit(1L, user, valorSolicitadoDeposito, Status.PENDENTE, pixCode,dataExpiracao);
+            Deposit depositSalvo = new Deposit(user, valorSolicitadoDeposito, Status.PENDENTE, pixCode,dataExpiracao);
 
             when(depositRepository.findDepositByPixId(pixCode)).thenReturn(Optional.of(depositSalvo));
 
