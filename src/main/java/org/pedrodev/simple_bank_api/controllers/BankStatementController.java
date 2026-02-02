@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping(value = "/extrato")
 public class BankStatementController {
 
-    private ExtratoService extratoService;
+    private final ExtratoService extratoService;
 
     public BankStatementController(ExtratoService extratoService) {
         this.extratoService = extratoService;

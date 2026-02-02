@@ -17,18 +17,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserRepository userRepository;
-
     private final WalletService walletService;
+
+    private final EmailService emailService;
 
     private AuthenticationManager authenticationManager;
 
     private TokenService tokenService;
 
-    public AuthService(UserRepository userRepository, WalletService walletService, AuthenticationManager authenticationManager, TokenService tokenService) {
+    public AuthService(UserRepository userRepository, WalletService walletService, AuthenticationManager authenticationManager, TokenService tokenService, EmailService emailService) {
         this.userRepository = userRepository;
         this.walletService = walletService;
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
+        this.emailService = emailService;
     }
 
 
@@ -43,7 +45,7 @@ public class AuthService {
         userRepository.save(user);
 
         walletService.automaticallyAddWalletToUserRegistration(user);
-
+        emailService.sendEmail(user.getEmail());
     }
 
     public LoginResponseDTO loginUser(LoginDTO loginDTO){

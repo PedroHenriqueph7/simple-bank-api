@@ -21,7 +21,7 @@ public class BillPaymentController {
     @Value("${asaas.webhook.secret}")
     private String tokenApp;
 
-    private BillPaymentService billPaymentService;
+    private final BillPaymentService billPaymentService;
 
     public BillPaymentController(BillPaymentService billPaymentService) {
         this.billPaymentService = billPaymentService;

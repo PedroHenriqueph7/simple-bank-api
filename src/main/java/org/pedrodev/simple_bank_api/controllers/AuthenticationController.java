@@ -5,6 +5,7 @@ import org.pedrodev.simple_bank_api.dtos.LoginDTO;
 import org.pedrodev.simple_bank_api.dtos.LoginResponseDTO;
 import org.pedrodev.simple_bank_api.dtos.RegisterDTO;
 import org.pedrodev.simple_bank_api.services.AuthService;
+import org.pedrodev.simple_bank_api.services.EmailService;
 import org.pedrodev.simple_bank_api.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,7 +38,6 @@ public class AuthenticationController {
 
         authService.registerUser(userDTO);
         return  ResponseEntity.ok("User register with success");
-
     }
 
 }
