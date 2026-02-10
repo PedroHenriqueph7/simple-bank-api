@@ -8,12 +8,11 @@ import jakarta.validation.Valid;
 import org.pedrodev.simple_bank_api.controllers.docs.TransactionsControllerDocs;
 import org.pedrodev.simple_bank_api.dtos.TransactionRequestDTO;
 import org.pedrodev.simple_bank_api.services.TransactionService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/transactions")
@@ -31,5 +30,16 @@ public class TransactionController implements TransactionsControllerDocs {
         transactionService.performTransaction(authentication, infoTransactionDTO);
 
         return ResponseEntity.ok().body("Transaction completed successfully.");
+    }
+
+    @GetMapping(value = "/me/comprovante")
+    public ResponseEntity<byte[]> gerarPdf(Authentication authentication) {
+
+        byte[] pdfBytes = transactionService.gerarPdfTransacao(authentication);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=comprovante.pdf")
+                .body(pdfBytes);
     }
 }

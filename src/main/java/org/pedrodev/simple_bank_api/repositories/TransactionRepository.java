@@ -17,6 +17,12 @@ import java.util.Optional;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
+
+    @Query(value = "SELECT * FROM tb_transaction\n" +
+            "ORDER BY id DESC\n" +
+            "LIMIT 1; ", nativeQuery = true)
+    Transaction findLastTransaction();
+
     @Query("SELECT COALESCE(SUM(t.valor), 0) FROM Transaction t WHERE t.pagador.id = :pagadorId AND t.dataeHora >= :datalimite")
     BigDecimal findValueTransactionsByPagador_id24Hours(@Param("pagadorId") Long pagadorId, @Param("datalimite") ZonedDateTime data);
 

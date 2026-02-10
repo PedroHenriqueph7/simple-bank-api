@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .header { text-align: center; border-bottom: 2px solid #333; margin-bottom: 20px; }
+        .details, .details_origem, .details_destino { width: 100%; border-collapse: collapse; }
+        .details, .details_origem, .details_destino td { padding: 8px; border-bottom: 1px solid #ddd; }
+        .label { font-weight: bold; color: #555; }
+        .success { color: green; font-weight: bold; text-align: center; margin-top: 10px;}
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Simple Bank</h1>
+    <h3>Comprovante de Transferência</h3>
+</div>
+
+<div class="success">TRANSAÇÃO REALIZADA COM SUCESSO</div>
+
+<br />
+
+<table class="details">
+    <tr>
+        <td class="label">Valor:</td>
+        <td th:text="${valor}">R$ 0,00</td>
+    </tr>
+    <tr>
+        <td class="label">Data:</td>
+        <td th:text="${data}">01/01/2026</td>
+    </tr>
+    <tr>
+        <td class="label">Identificador da Transação:</td>
+        <td th:text="${idTransacao}">id da transação</td>
+    </tr>
+</table>
+
+<table class="details_origem">
+    <tr>
+        <td class="label">Origem:</td>
+        <td th:text="${pagador}">Nome do Pagador</td>
+    </tr>
+    <tr>
+        <td class="label">CPF:</td>
+        <td th:text="${cpf_origem}">CPF do pagador</td>
+    </tr>
+</table>
+
+<table class="details_destino">
+    <tr>
+        <td class="label">Destino:</td>
+        <td th:text="${recebedor}">Nome do Recebedor</td>
+    </tr>
+    <tr>
+        <td class="label">CPF:</td>
+        <td th:text="${cpf_destino}">CPF do destinatário</td>
+    </tr>
+</table>
+<div style="margin-top: 30px; font-size: 10px; color: gray;">
+    Autenticação: <span th:text="${idTransacao}">XYZ-123</span>
+</div>
+</body>
+</html>
