@@ -21,8 +21,8 @@ public class BankStatementController {
     @GetMapping
     public List<ExtratoBancarioDTO> exibirExtratoBancario() {
 
-        List<ExtratoBancarioDTO> extratoBancario = extratoService.gerarExtratoBancario();
+        List<ExtratoBancarioDTO> extratosBancario = extratoService.gerarExtratoBancario();
 
-        return extratoBancario;
+        return extratosBancario;
     }
 }

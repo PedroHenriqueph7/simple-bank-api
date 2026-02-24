@@ -20,8 +20,7 @@ import java.util.List;
 public class User implements UserDetails {
 
     private boolean ativo = true;
-    // Nome lógico para o JPA
-    // Nome da sequência no Banco de Dados// A escolha mais segura e compatível// Diz para usar sequência// Aponta para o gerador definido acima
+
     @Id
     @SequenceGenerator(name = "user_seq", sequenceName = "user_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")

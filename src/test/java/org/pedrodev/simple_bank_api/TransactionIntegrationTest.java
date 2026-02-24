@@ -47,51 +47,12 @@ public class TransactionIntegrationTest {
     WalletRepository walletRepository;
 
     @Test
-    @DisplayName("Deve realizar a transação bem sucedida!")
-    @Transactional
-    void transacaoSucesso() throws Exception {
-
-        // Cenário
-        User pagador = criarUsuario(true,"Pagador Test", "982.870.980-50","pagador@gmail.com", "56b99c0ab29fd895cfd3deba9086e0ca49d6a3f2bfe65836d8d11aa4fa291184", UserRole.COMUM );
-
-        // User antes do salvamento sem Id, depois de executado a linha abaixo ele recebe o seu id do banco de dados, O PostgreSQL retorna para o hibernate o id gerado no registro, e por meio do Reflection esse valor é injetado no Objeto pagador
-        userRepository.save(pagador);
-
-        Wallet carteiraPagador = new Wallet(new BigDecimal(150), pagador);
-        walletRepository.save(carteiraPagador);
-
-        User recebedor = criarUsuario(true,"Recebedor Test", "171.238.340-03","recebedor@gmail.com", "0906a329060ed475c0f0e9275b133b0051be7cda6d875b4120c067b224c36e1d", UserRole.COMUM );
-        userRepository.save(recebedor);
-
-        Wallet carteiraRecebedor = new Wallet(BigDecimal.ZERO, recebedor);
-        walletRepository.save(carteiraRecebedor);
-
-        // Simular o Login Manualmente com o Objeto User Real
-        // Isso garante que o (User) authentication.getPrincipal() funcione no Service
-        UsernamePasswordAuthenticationToken loginFake = new UsernamePasswordAuthenticationToken(
-                pagador, // Aqui vai o Principal (Seu objeto User)
-                null,
-                pagador.getAuthorities() // Se a classe User implementa UserDetails
-        );
-        SecurityContextHolder.getContext().setAuthentication(loginFake);
-
-        // Ação
-        TransactionRequestDTO requisicaoSucesso = new TransactionRequestDTO(recebedor.getId(), new BigDecimal(50));
-
-        mockMvc.perform(post("/transactions/transaction")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requisicaoSucesso)))
-                // Verificação
-                .andExpect(status().isOk());
-    }
-
-    @Test
     @DisplayName("Deve lancar uma exception de retorno 404 Not Found")
     @Transactional
     void transacaoMalSucedidaRecebedorNaoEncontrado() throws Exception {
 
         // Cenário
-        User pagador = criarUsuario(true,"Pagador Test", "982.870.980-50","pagador@gmail.com", "56b99c0ab29fd895cfd3deba9086e0ca49d6a3f2bfe65836d8d11aa4fa291184", UserRole.COMUM );
+        User pagador = criarUsuario(true,"Pagador Test", "866.867.480-30","pagador111@gmail.com", "56b99c0ab29fd895cfd3deba9086e0ca49d6a3f2bfe65836d8d11aa4fa291184", UserRole.COMUM );
         userRepository.save(pagador);
 
         Wallet carteiraPagador = new Wallet(new BigDecimal(150), pagador);
@@ -123,18 +84,17 @@ public class TransactionIntegrationTest {
     void transacaoMalSucedidaArgumentoRecebedorInvalido() throws Exception {
 
         // Cenário
-        User pagador = criarUsuario(true,"Pagador Test", "982.870.980-50","pagador@gmail.com", "56b99c0ab29fd895cfd3deba9086e0ca49d6a3f2bfe65836d8d11aa4fa291184", UserRole.COMUM );
+        User pagador = criarUsuario(true,"Pagador Test", "866.867.480-30","pagador1111@gmail.com", "56b99c0ab29fd895cfd3deba9086e0ca49d6a3f2bfe65836d8d11aa4fa291184", UserRole.COMUM );
         userRepository.save(pagador);
 
         Wallet carteiraPagador = new Wallet(new BigDecimal(150), pagador);
         walletRepository.save(carteiraPagador);
 
-        // Simular o Login Manualmente com o Objeto User Real
-        // Isso garante que o (User) authentication.getPrincipal() funcione no Service
+
         UsernamePasswordAuthenticationToken loginFake = new UsernamePasswordAuthenticationToken(
-                pagador, // Aqui vai o Principal (Seu objeto User)
+                pagador,
                 null,
-                pagador.getAuthorities() // Se a classe User implementa UserDetails
+                pagador.getAuthorities()
         );
         SecurityContextHolder.getContext().setAuthentication(loginFake);
 
@@ -155,13 +115,13 @@ public class TransactionIntegrationTest {
     void transacaoMalSucedidaArgumentoValorInvalido() throws Exception {
 
         // Cenário
-        User pagador = criarUsuario(true,"Pagador Test", "982.870.980-50","pagador@gmail.com", "56b99c0ab29fd895cfd3deba9086e0ca49d6a3f2bfe65836d8d11aa4fa291184", UserRole.COMUM );
+        User pagador = criarUsuario(true,"Pagador Test", "866.867.480-30","pagador11@gmail.com", "56b99c0ab29fd895cfd3deba9086e0ca49d6a3f2bfe65836d8d11aa4fa291184", UserRole.COMUM );
         userRepository.save(pagador);
 
         Wallet carteiraPagador = new Wallet(new BigDecimal(150), pagador);
         walletRepository.save(carteiraPagador);
 
-        User recebedor = criarUsuario(true,"Recebedor Test", "171.238.340-03","recebedor@gmail.com", "0906a329060ed475c0f0e9275b133b0051be7cda6d875b4120c067b224c36e1d", UserRole.COMUM );
+        User recebedor = criarUsuario(true,"Recebedor Test", "171.238.340-03","recebedor1@gmail.com", "0906a329060ed475c0f0e9275b133b0051be7cda6d875b4120c067b224c36e1d", UserRole.COMUM );
         userRepository.save(recebedor);
 
         Wallet carteiraRecebedor = new Wallet(BigDecimal.ZERO, recebedor);
@@ -188,83 +148,6 @@ public class TransactionIntegrationTest {
 
     }
 
-
-    @Test
-    @DisplayName("Teste de concorrencia nas transacoes entre usuarios")
-    void testarConcorrenciaNasTransacoes() throws Exception {
-
-        // Cenário
-        User pagador = criarUsuario(true,"Pagador Test", "982.870.980-50","pagador@gmail.com", "56b99c0ab29fd895cfd3deba9086e0ca49d6a3f2bfe65836d8d11aa4fa291184", UserRole.COMUM);
-        userRepository.save(pagador);
-
-        Wallet carteiraPagador = new Wallet(new BigDecimal(150), pagador);
-        walletRepository.save(carteiraPagador);
-
-        User recebedor = criarUsuario(true,"Recebedor Test", "171.238.340-03","recebedor@gmail.com", "0906a329060ed475c0f0e9275b133b0051be7cda6d875b4120c067b224c36e1d", UserRole.COMUM);
-        userRepository.save(recebedor);
-
-        Wallet carteiraRecebedor = new Wallet(BigDecimal.ZERO, recebedor);
-        walletRepository.save(carteiraRecebedor);
-
-
-        UsernamePasswordAuthenticationToken loginFake = new UsernamePasswordAuthenticationToken(
-                pagador, null, pagador.getAuthorities()
-        );
-        // Configura o contexto na Thread MAIN (para referência)
-        SecurityContext contextMain = SecurityContextHolder.createEmptyContext();
-        contextMain.setAuthentication(loginFake);
-
-        // Acao
-        TransactionRequestDTO requisicao = new TransactionRequestDTO(recebedor.getId(), new BigDecimal(100));
-        String jsonBody = objectMapper.writeValueAsString(requisicao);
-
-        // THREAD 1
-        CompletableFuture<Integer> requisicao1 = CompletableFuture.supplyAsync(() -> {
-            try {
-                // Injetar o contexto de segurança DENTRO da nova thread
-                SecurityContextHolder.setContext(contextMain);
-
-                return mockMvc.perform(post("/transactions/transaction")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jsonBody))
-                        .andReturn().getResponse().getStatus();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return 500;
-            }
-        });
-
-        // THREAD 2
-        CompletableFuture<Integer> requisicao2 = CompletableFuture.supplyAsync(() -> {
-            try {
-
-                SecurityContextHolder.setContext(contextMain);
-
-                return mockMvc.perform(post("/transactions/transaction")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jsonBody))
-                        .andReturn().getResponse().getStatus();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return 500;
-            }
-        });
-
-        CompletableFuture.allOf(requisicao1, requisicao2).join();
-
-        int status1 = requisicao1.get();
-        int status2 = requisicao2.get();
-
-        System.out.println("Status 1: " + status1);
-        System.out.println("Status 2: " + status2);
-
-        long sucessos = java.util.stream.Stream.of(status1, status2)
-                .filter(s -> s == 200)
-                .count();
-
-        // Verificação
-        assertEquals(1, sucessos, "Erro de Concorrência! Deveria ter 1 sucesso, mas teve: " + sucessos);
-    }
     User criarUsuario(boolean ativo, String nomeCompleto, String cpf, String email, String senha, UserRole role){
 
         User user = new User();

@@ -10,10 +10,9 @@ public class AuthorizationClient {
 
     private final WebClient webClient;
 
-    // Injete o WebClient.Builder (Melhor prática)
     public AuthorizationClient(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder
-                .baseUrl("https://mocki.io/v1/a21877f1-a60b-4fce-a92a-855eb2339358") // Use a URL real ou do properties
+                .baseUrl("https://mocki.io/v1/a21877f1-a60b-4fce-a92a-855eb2339358")
                 .build();
     }
 

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(name = "asaasClient", url = "${baseurl.sandbox.api.gateway}", configuration = AsaasConfig.class)
 public interface AsaasClient {
 
-    @PostMapping("/v3/bill") // Endpoint de Pagamento de Contas
+    @PostMapping("/v3/bill")
     AsaasBillResponseDTO pagarConta(@RequestBody AsaasBillRequestDTO request);
 
 }

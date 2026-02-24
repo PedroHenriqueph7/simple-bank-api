@@ -5,9 +5,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="3-structure-and-auto-data" author="pedro.henrique">
-
-        <preConditions onFail="MARK_RAN">
+    <changeSet id="003-create-wallet-table" author="pedro.henrique">
+        <preConditions onFail="CONTINUE">
             <not>
                 <tableExists tableName="tb_wallet"/>
             </not>

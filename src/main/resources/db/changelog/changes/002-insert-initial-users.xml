@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="2" author="pedro.henrique">
+    <changeSet id="002-insert-initial-users" author="pedro.henrique">
         <comment>Inserindo usuários iniciais Lojistas e Comuns</comment>
         <insert tableName="tb_user">
         <column name="ativo" value="true"/>

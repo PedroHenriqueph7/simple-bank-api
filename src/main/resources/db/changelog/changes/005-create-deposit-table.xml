@@ -5,9 +5,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="4" author="pedro.henrique">
-
-        <preConditions onFail="MARK_RAN">
+    <changeSet id="005-create-deposit-table" author="pedro.henrique">
+        <preConditions onFail="CONTINUE">
             <not>
                 <tableExists tableName="tb_deposit"/>
             </not>
