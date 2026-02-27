@@ -1,0 +1,36 @@
+services:
+  db-postgre:
+    image: postgres:17.4
+    container_name: postgres-simple-bank
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - bank-network
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend-core:
+    build: .
+    container_name: simple-bank-api-container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db-postgre
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-postgre:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - bank-network
+
+networks:
+  bank-network:
+    driver: bridge
+
+volumes:
+  pgdata:

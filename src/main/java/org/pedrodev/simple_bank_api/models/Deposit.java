@@ -43,7 +43,7 @@ public class Deposit {
     @Column(nullable = false)
     private ZonedDateTime dataExpiracao;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "data_hora")
     @CreatedDate
     private LocalDateTime dataHora;
 

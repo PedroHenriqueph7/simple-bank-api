@@ -43,6 +43,9 @@
         <column name="data_expiracao" type="DATE">
             <constraints nullable="false"/>
         </column>
+
+        <column name="data_hora" type="TIMESTAMP">
+        </column>
     </createTable>
 
     </changeSet>
